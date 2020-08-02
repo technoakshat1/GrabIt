@@ -1,0 +1,52 @@
+.header{
+  background-color:#000000;
+  /* background-color:#9e9e9e; */
+  position:absolute;
+  z-index: 1;
+  opacity: 85%;
+  color: white;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height:75px;
+}
+
+
+
+.logo{
+  font-family:"Dancing Script";
+  font-weight:600;
+  font-size: 36px;
+}
+.navbar{
+ border:none;
+ font-family:"Roboto Condensed";
+ font-size:20px;
+ text-align: center;
+}
+
+.homepageImg{
+  height:900px;
+  width:100%;
+  position:absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+}
+
+.searchBox{
+  width: 30rem;
+  border-radius:20px;
+  border:solid;
+  border-width: thin;
+  border-color:#bdbdbd;
+  padding:10px;
+  height:30px;
+}
+
+:focus{
+  outline: none;
+}
