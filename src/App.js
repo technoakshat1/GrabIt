@@ -1,15 +1,21 @@
-import React from 'react';
-import HeaderComponent from './components/header';
-import HomePage from './pages/homepage.jsx'
-import "./App.css"
+import React from "react";
+import "bootstrap/dist/css/bootstrap.css";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+
+
+import HomePage from "./pages/homepage.jsx";
+
+import "./App.css";
 
 function App() {
   return (
-    <div className="App">
-     <HeaderComponent/>
-     <HomePage />
-     
-    </div>
+    <Router>
+      <Switch>
+        <Route path="/">
+          <HomePage />
+        </Route>
+      </Switch>
+    </Router>
   );
 }
 

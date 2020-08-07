@@ -4,11 +4,9 @@ function SearchBox() {
   return (
     <div>
       <form>
-        <input
-          className="searchBox"
-          type="text"
-          placeholder="Search"
-        ></input>
+        <div>
+          <input className="searchBox" type="text" placeholder="Search"></input>
+        </div>
       </form>
     </div>
   );
