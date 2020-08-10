@@ -15,8 +15,11 @@
     "jquery": "^3.5.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-helmet": "^6.1.0",
+    "react-media-hook": "^0.4.7",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
+    "react-switch": "^5.0.1",
     "reactstrap": "^8.5.1"
   },
   "scripts": {
