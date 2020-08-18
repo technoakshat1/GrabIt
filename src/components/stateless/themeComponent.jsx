@@ -48,6 +48,56 @@ function GlobalTheme(){
             color:${currentTheme.textColor};/*for dark theme color to be passed via context*/
             background-color:${currentTheme.primaryColorDark};/*for dark theme color to be passed via context*/
           }
+
+          .login-card{
+            background-color:${currentTheme.primaryColorMedium};
+            color:${currentTheme.textColor};
+          }
+
+          #userName{
+            outline:none;
+            background-color:${currentTheme.primaryColorMedium};
+            border-color:${currentTheme.primaryColorDark};
+          }
+
+          #userName:focus{
+            border-color:${currentTheme.secondaryColor};
+          }
+
+          #password{
+            outline:none;
+            background-color:${currentTheme.primaryColorMedium};
+            border-color:${currentTheme.primaryColorDark};
+          }
+
+          #password:focus{
+            border-color:${currentTheme.secondaryColor};
+          }
+
+          .ghost{
+            border-color:${currentTheme.secondaryColor};
+            background-color:${currentTheme.secondaryColor};
+          }
+
+          .form{
+            color:${currentTheme.textColor};
+            background-color:${currentTheme.primaryColorMedium};
+          }
+
+          .form-control{
+            background-color:${currentTheme.primaryColorLight};
+            outline-color:${currentTheme.secondaryColor};
+          }
+
+          .form-control:focus{
+            color:${currentTheme.textColor};
+            background-color:${currentTheme.primaryColorMedium};
+          }
+
+          .text-accent{
+            color:${currentTheme.secondaryColor};
+          }
+
         `}</style>
       </Helmet>
     );
