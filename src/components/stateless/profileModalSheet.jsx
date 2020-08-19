@@ -1,4 +1,6 @@
 import React, { useContext, useEffect, useRef } from "react";
+import axios from "axios";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUser,
@@ -9,6 +11,7 @@ import {
   faTimesCircle,
   faUserCheck,
   faUserPlus,
+  faSignOutAlt
 } from "@fortawesome/free-solid-svg-icons";
 
 import ThemeContext, {
@@ -16,9 +19,12 @@ import ThemeContext, {
   AuthenticationContext,
   LoginOverlayContext,
   defaultLoginContext,
+  AuthenticationApiContext,
 } from "../../context/context";
 
 import AppTheme from "../../AppTheme";
+
+import {FETCH_USER_DATA} from "../../context/action.types";
 
 import MaterialSwitch from "./materialSwitch";
 
@@ -26,7 +32,9 @@ function ProfileModalSheet(props) {
   const wrapperRef = useRef(null);
   useOutside(wrapperRef);
 
-  const isAuthenticated = useContext(AuthenticationContext)[0];
+  const {userInfo,dispatch}=useContext(AuthenticationApiContext);
+
+  const [isAuthenticated ,setIsAuthenticated]= useContext(AuthenticationContext);
 
   const [themeMode, setThemeMode] = useContext(ThemeContext);
   const currentTheme = AppTheme[themeMode];
@@ -35,12 +43,66 @@ function ProfileModalSheet(props) {
 
   const setOpen = useContext(LoginOverlayContext)[1];
   const setLoginContext = useContext(defaultLoginContext)[1];
+  const instantiated=false;
+
+  useEffect((instantiated)=>{
+    if(isAuthenticated&&!instantiated){
+      fetchUserData();
+      console.log(userInfo);
+      instantiated=true;
+    }
+  },[instantiated]);
+
+  async function fetchUserData(){
+    try{
+      const response=await axios({
+        method: 'get',
+        withCredentials : true,
+        crossdomain : true,
+        url: 'http://localhost:3001/userInfo',
+        
+      });
+      console.log(response);
+      if(response.data.message==="success"){
+        dispatch({
+          type:FETCH_USER_DATA,
+          payload:response.data.username,
+        })
+      }
+      
+    }catch(err){
+      console.log(err);
+    }
+  }
 
   function onToggle() {
     setChecked(!isChecked);
 
     setThemeMode(themeMode === "light" ? "dark" : "light");
   }
+
+  function handleLogOut() {
+     logout();
+  }
+
+  async function logout(){
+    try{
+      const response=await axios({
+          method: 'get',
+          withCredentials : true,
+          crossdomain : true,
+          url: 'http://localhost:3001/signOut',
+        });
+         console.log(response);
+         if(response.data.message==="success"){
+            setIsAuthenticated(false);
+            setOpen(false);
+         }
+      }catch(err){
+          console.log(err);
+      }
+    }
+
 
   function useOutside(ref) {
     useEffect(() => {
@@ -78,7 +140,7 @@ function ProfileModalSheet(props) {
 
       {isAuthenticated && (
         <div>
-          <h3>UserName</h3>
+          <h3>{userInfo.length!==0?userInfo[0].username:null}</h3>
           <p>extra information</p>
           <hr style={{ width: "100%" }} />
           <div className="modal-options">
@@ -103,6 +165,10 @@ function ProfileModalSheet(props) {
           <div className="modal-options">
             <FontAwesomeIcon icon={faPercent} className="modal-icons" />
             <h5 className="modal-text"> offers</h5>
+          </div>
+          <div className="modal-options" onClick={handleLogOut}>
+            <FontAwesomeIcon icon={faSignOutAlt} className="modal-icons" />
+            <h5 className="modal-text"> Logout</h5>
           </div>
         </div>
       )}

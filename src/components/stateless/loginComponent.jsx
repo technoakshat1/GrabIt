@@ -1,20 +1,94 @@
-import React, { useRef, useContext, useEffect } from "react";
+import React, { useState, useRef, useContext, useEffect } from "react";
+import qs from "qs";
+import axios from "axios";
 
-import { defaultLoginContext } from "../../context/context";
+import { AUTHENTICATE_LOCAL } from "../../context/action.types";
+
+import {
+  LoginOverlayContext,
+  defaultLoginContext,
+  AuthenticationApiContext,
+  AuthenticationContext,
+} from "../../context/context";
 
 function LoginCard() {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const container = useRef(null);
-  const component = useContext(defaultLoginContext)[0];
+  const [component ,setComponent]= useContext(defaultLoginContext);
+  const setIsAuthenticated = useContext(AuthenticationContext)[1];
+  const setOpen=useContext(LoginOverlayContext)[1];
   function onSignUp() {
+    setComponent("signUp");
     container.current.classList.add("right-panel-active");
   }
   function onSignIn() {
+    setComponent("signIn");
     container.current.classList.remove("right-panel-active");
   }
 
   useEffect(() => {
     defaultComponentCall(component);
   });
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    if (username !== "" && password !== "") {
+      authenticateLocal(username,password);
+    }
+  }
+
+  async function authenticateLocal(username,password){
+    try{
+       const response=await axios({
+        method: 'post',
+        headers:{
+            'content-type': 'application/x-www-form-urlencoded'
+        },
+        withCredentials : true,
+        crossdomain : true,
+        url: 'http://localhost:3001/signIn',
+        data: qs.stringify({
+          username: username,
+          password: password,
+        })
+      });
+       console.log(response);
+       if(response.status===200){
+         handleLoginSuccess();
+       }
+    }catch(err){
+        console.log(err);
+    }
+}
+
+// function onGoogleClick(e){
+//   e.preventDefault();
+//   authenticateGoogle();
+// }
+
+
+// async function authenticateGoogle(){
+//   try{
+//     const response=await axios({
+//      method: 'get',
+//      withCredentials : true,
+//      crossdomain : true,
+//      url: 'http://localhost:3001/signIn/google',
+//    });
+//     console.log(response);
+//     if(response.status===200){
+//       handleLoginSuccess();
+//     }
+//  }catch(err){
+//      console.log(err);
+//  }
+// }
+
+ function handleLoginSuccess(){
+  setIsAuthenticated(true);
+  setOpen(false);
+ }
 
   function defaultComponentCall(component) {
     switch (component) {
@@ -39,7 +113,7 @@ function LoginCard() {
               <a href="#" className="social text-accent">
                 <i className="fab fa-facebook-f"></i>
               </a>
-              <a href="#" className="social text-accent">
+              <a href="http://localhost:3001/signIn/google" className="social text-accent">
                 <i className="fab fa-google"></i>
               </a>
               <a href="#" className="social text-accent">
@@ -66,7 +140,7 @@ function LoginCard() {
               <a href="#" className="social text-accent">
                 <i className="fab fa-facebook-f"></i>
               </a>
-              <a href="#" className="social text-accent">
+              <a  href="http://localhost:3001/signIn/google" className="social text-accent">
                 <i className="fab fa-google"></i>
               </a>
               <a href="#" className="social text-accent">
@@ -74,16 +148,24 @@ function LoginCard() {
               </a>
             </div>
             <span>or use your account</span>
-            <input type="email" placeholder="Email" className="form-control" />
+            <input
+              type="email"
+              placeholder="Email"
+              className="form-control"
+              onChange={(e) => setUsername(e.target.value)}
+              value={username}
+            />
             <input
               type="password"
               placeholder="Password"
               className="form-control"
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
             />
             <a href="#" className="text-accent">
               Forgot your password?
             </a>
-            <button className="ghost" onClick={onSignIn}>
+            <button className="ghost"  onClick={handleSubmit}>
               Sign In
             </button>
           </form>

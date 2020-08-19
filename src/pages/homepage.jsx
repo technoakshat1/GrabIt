@@ -1,7 +1,7 @@
 import React,{useContext,useRef,useEffect} from "react";
 import {Overlay} from "react-portal-overlay";
 
-import {LoginOverlayContext} from "../context/context";
+import {LoginOverlayContext,AuthenticationContext} from "../context/context";
 
 import HeaderComponent from "../components/statefull/header";
 
@@ -11,9 +11,10 @@ import LoginComponent from "../components/stateless/loginComponent";
 
 function HomePage() {
   const [open,setOpen]=useContext(LoginOverlayContext);
-  
   const wrapperRef = useRef(null);
   useOutside(wrapperRef);
+
+  
 
 
   function useOutside(ref) {
