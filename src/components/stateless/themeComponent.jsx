@@ -1,18 +1,38 @@
-import React,{useContext} from "react";
+import React, { useContext, useEffect } from "react";
 import Helmet from "react-helmet";
 
-import ThemeContext from "../../context/context";
+import ThemeContext, { SwitchContext } from "../../context/context";
 
 import AppTheme from "../../AppTheme";
 
-function GlobalTheme(){
+import {getTheme} from "../../API/loginAPI";
 
-    const theme = useContext(ThemeContext)[0];
-    const currentTheme = AppTheme[theme];
+function GlobalTheme() {
+  const [theme, setTheme] = useContext(ThemeContext);
+  const setChecked = useContext(SwitchContext)[1];
 
-    return(
-        <Helmet>
-        <style type="text/css">{`
+  const currentTheme = AppTheme[theme];
+
+  const instantiated = false;
+
+  useEffect(
+    (instantiated) => {
+      if (!instantiated) {
+        getTheme(onGetTheme);
+        instantiated = true;
+      }
+    },
+    [instantiated]
+  );
+
+  function onGetTheme(mode) {
+    setTheme(mode);
+    setChecked(mode === "dark" ? true : false);
+  }
+
+  return (
+    <Helmet>
+      <style type="text/css">{`
           body{
             background-color:${currentTheme.primaryColorDark};
           }
@@ -87,6 +107,7 @@ function GlobalTheme(){
           .form-control{
             background-color:${currentTheme.primaryColorLight};
             outline-color:${currentTheme.secondaryColor};
+            color:${currentTheme.textColor};
           }
 
           .form-control:focus{
@@ -98,9 +119,21 @@ function GlobalTheme(){
             color:${currentTheme.secondaryColor};
           }
 
+          .modal-options{
+            cursor:pointer;
+          }
+
+          .form-mobile{
+            color:${currentTheme.textColor};
+            background-color:${currentTheme.primaryColorMedium};
+          }
+
+          .side-drawer{
+            background-color:${currentTheme.primaryColorMedium}
+          }
         `}</style>
-      </Helmet>
-    );
+    </Helmet>
+  );
 }
 
 export default GlobalTheme;

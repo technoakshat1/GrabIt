@@ -1,5 +1,4 @@
-import React, { useContext, useEffect, useRef } from "react";
-import axios from "axios";
+import React, { useState,useContext, useEffect, useRef } from "react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -11,7 +10,7 @@ import {
   faTimesCircle,
   faUserCheck,
   faUserPlus,
-  faSignOutAlt
+  faSignOutAlt,
 } from "@fortawesome/free-solid-svg-icons";
 
 import ThemeContext, {
@@ -19,22 +18,35 @@ import ThemeContext, {
   AuthenticationContext,
   LoginOverlayContext,
   defaultLoginContext,
-  AuthenticationApiContext,
+  ApiContext,
 } from "../../context/context";
+
+
+import {useMediaQuery} from "react-responsive";
 
 import AppTheme from "../../AppTheme";
 
-import {FETCH_USER_DATA} from "../../context/action.types";
+import {
+  FETCH_USER_DATA,
+  LOGOUT_CLEAR_USER_DATA,
+} from "../../context/action.types";
+
+import {logout,saveMode,fetchUserData} from "../../API/loginAPI";
 
 import MaterialSwitch from "./materialSwitch";
 
 function ProfileModalSheet(props) {
+  
+  const mobileView = useMediaQuery({query:"(max-width: 420px)"});
+
   const wrapperRef = useRef(null);
   useOutside(wrapperRef);
 
-  const {userInfo,dispatch}=useContext(AuthenticationApiContext);
+  const { userInfo, dispatch } = useContext(ApiContext);
 
-  const [isAuthenticated ,setIsAuthenticated]= useContext(AuthenticationContext);
+  const [isAuthenticated, setIsAuthenticated] = useContext(
+    AuthenticationContext
+  );
 
   const [themeMode, setThemeMode] = useContext(ThemeContext);
   const currentTheme = AppTheme[themeMode];
@@ -43,38 +55,29 @@ function ProfileModalSheet(props) {
 
   const setOpen = useContext(LoginOverlayContext)[1];
   const setLoginContext = useContext(defaultLoginContext)[1];
-  const instantiated=false;
+  const instantiated = false;
 
-  useEffect((instantiated)=>{
-    if(isAuthenticated&&!instantiated){
-      fetchUserData();
-      console.log(userInfo);
-      instantiated=true;
-    }
-  },[instantiated]);
-
-  async function fetchUserData(){
-    try{
-      const response=await axios({
-        method: 'get',
-        withCredentials : true,
-        crossdomain : true,
-        url: 'http://localhost:3001/userInfo',
-        
-      });
-      console.log(response);
-      if(response.data.message==="success"){
-        dispatch({
-          type:FETCH_USER_DATA,
-          payload:response.data.username,
-        })
+  useEffect(
+    (instantiated) => {
+      if (isAuthenticated && !instantiated && userInfo.length === 0) {
+        fetchUserData(onFetchUserData);
+        console.log(userInfo);
+        instantiated = true;
       }
       
-    }catch(err){
-      console.log(err);
-    }
+
+    },
+    [instantiated]
+  );
+
+  function onFetchUserData(response){
+    dispatch({
+      type: FETCH_USER_DATA,
+      payload: response.data.username,
+    });
   }
 
+  
   function onToggle() {
     setChecked(!isChecked);
 
@@ -82,27 +85,22 @@ function ProfileModalSheet(props) {
   }
 
   function handleLogOut() {
-     logout();
+    logout(logoutSuccess);
+    saveMode(themeMode);
   }
 
-  async function logout(){
-    try{
-      const response=await axios({
-          method: 'get',
-          withCredentials : true,
-          crossdomain : true,
-          url: 'http://localhost:3001/signOut',
-        });
-         console.log(response);
-         if(response.data.message==="success"){
-            setIsAuthenticated(false);
-            setOpen(false);
-         }
-      }catch(err){
-          console.log(err);
-      }
-    }
+  function logoutSuccess() {
+    dispatch({
+      type: LOGOUT_CLEAR_USER_DATA,
+      payload: userInfo[0].username,
+    });
+    setIsAuthenticated(false);
+    setOpen(false);
+  }
 
+  
+
+ 
 
   function useOutside(ref) {
     useEffect(() => {
@@ -115,11 +113,22 @@ function ProfileModalSheet(props) {
         }
       }
 
+     
       // Bind the event listener
-      document.addEventListener("mousedown", handleClickOutside);
+      if(!mobileView){
+        document.addEventListener("mousedown", handleClickOutside);
+      }else{
+        document.addEventListener("touchstart", handleClickOutside);
+      }
+     
       return () => {
         // Unbind the event listener on clean up
-        document.removeEventListener("mousedown", handleClickOutside);
+        if(!mobileView){
+          document.removeEventListener("mousedown", handleClickOutside);
+        }else{
+          document.removeEventListener("touchstart", handleClickOutside);
+        }
+       
       };
     }, [ref]);
   }
@@ -128,11 +137,6 @@ function ProfileModalSheet(props) {
     <div
       className="profile-modal"
       ref={wrapperRef}
-      style={
-        isAuthenticated === true
-          ? { marginLeft: `-6.6rem`, position: `absolute` }
-          : { marginLeft: `-11rem` }
-      }
     >
       <div onClick={props.onClose}>
         <FontAwesomeIcon icon={faTimesCircle} className="close-icon" />
@@ -140,7 +144,7 @@ function ProfileModalSheet(props) {
 
       {isAuthenticated && (
         <div>
-          <h3>{userInfo.length!==0?userInfo[0].username:null}</h3>
+          <h3>{userInfo.length !== 0 ? userInfo[0].username : null}</h3>
           <p>extra information</p>
           <hr style={{ width: "100%" }} />
           <div className="modal-options">

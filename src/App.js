@@ -7,17 +7,18 @@ import ThemeContext, {
   AuthenticationContext,
   LoginOverlayContext,
   defaultLoginContext,
-  AuthenticationApiContext
+  ApiContext
 } from "./context/context.jsx";
 
 import axios from "axios";
 
-import AuthenticationReducer from "./context/AuthenticationReducer.jsx";
-
+import Reducer from "./context/Reducer.jsx";
 
 import HomePage from "./pages/homepage.jsx";
 
 import "./App.css";
+
+import {isLoggedIn} from "./API/loginAPI.js";
 
 function App() {
   const themeHook = useState("light");
@@ -25,25 +26,14 @@ function App() {
   const isAuthenticated = useState(false);
   const loginOverlay = useState(false);
   const defaultLoginComponent=useState("signIn");
-  const [userInfo,dispatch]=useReducer(AuthenticationReducer,[]);
+  const [userInfo,dispatch]=useReducer(Reducer,[]);
 
   useEffect(()=>{
-    isLoggedIn();
+    isLoggedIn(onSuccess);
   });
 
-  async function isLoggedIn(){
-      const response=await axios({
-        method: 'get',
-        withCredentials : true,
-        crossdomain : true,
-        url: 'http://localhost:3001/signIn',
-      });
-
-      console.log(response);
-
-      if(response.data.message==="Authenticated"){
-         isAuthenticated[1](true);
-      }
+  function onSuccess(){
+    isAuthenticated[1](true);
   }
 
   return (
@@ -52,7 +42,7 @@ function App() {
         <AuthenticationContext.Provider value={[...isAuthenticated]}>
           <LoginOverlayContext.Provider value={[...loginOverlay]}>
            <defaultLoginContext.Provider value={[...defaultLoginComponent]}>
-            <AuthenticationApiContext.Provider value={{userInfo,dispatch}}>
+            <ApiContext.Provider value={{userInfo,dispatch}}>
             <Router>
               <Switch>
                 <Route exact path="/">
@@ -60,7 +50,7 @@ function App() {
                 </Route>
               </Switch>
             </Router>
-            </AuthenticationApiContext.Provider>
+            </ApiContext.Provider>
             </defaultLoginContext.Provider>
           </LoginOverlayContext.Provider>
         </AuthenticationContext.Provider>

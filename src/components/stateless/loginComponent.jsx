@@ -1,94 +1,76 @@
 import React, { useState, useRef, useContext, useEffect } from "react";
-import qs from "qs";
-import axios from "axios";
+import {authenticateLocal} from "../../API/loginAPI";
 
-import { AUTHENTICATE_LOCAL } from "../../context/action.types";
-
-import {
+import ThemeContext, {
   LoginOverlayContext,
   defaultLoginContext,
-  AuthenticationApiContext,
   AuthenticationContext,
+  SwitchContext,
 } from "../../context/context";
+
+import { useMediaQuery } from "react-responsive";
 
 function LoginCard() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+  const [wrongCredentials, setWrongCredentials] = useState(false);
+
   const container = useRef(null);
-  const [component ,setComponent]= useContext(defaultLoginContext);
+  const [component, setComponent] = useContext(defaultLoginContext);
   const setIsAuthenticated = useContext(AuthenticationContext)[1];
-  const setOpen=useContext(LoginOverlayContext)[1];
+  const setOpen = useContext(LoginOverlayContext)[1];
+  const setThemeMode = useContext(ThemeContext)[1];
+  const setChecked = useContext(SwitchContext)[1];
+  const mobileView = useMediaQuery({ query: "(max-width: 420px)" });
+  const [signIn, setSignIn] = useState(false);
+  const [loginCredentials, setLoginCredential] = useState(false);
+  const [signUpCredentials, setSignUpCredential] = useState(false);
+
   function onSignUp() {
     setComponent("signUp");
-    container.current.classList.add("right-panel-active");
+    if (!mobileView) {
+      container.current.classList.add("right-panel-active");
+    } else {
+      setSignIn(false);
+    }
   }
   function onSignIn() {
     setComponent("signIn");
-    container.current.classList.remove("right-panel-active");
+    if (!mobileView) {
+      container.current.classList.remove("right-panel-active");
+    } else {
+      setSignIn(true);
+    }
   }
 
-  useEffect(() => {
+  function enterCredentials() {
+    setLoginCredential(true);
+    setSignIn(false);
+  }
+
+  useEffect((ref) => {
     defaultComponentCall(component);
   });
 
   function handleSubmit(e) {
     e.preventDefault();
     if (username !== "" && password !== "") {
-      authenticateLocal(username,password);
+      authenticateLocal(username, password,handleLoginSuccess,handleLoginFailure);
     }
   }
 
-  async function authenticateLocal(username,password){
-    try{
-       const response=await axios({
-        method: 'post',
-        headers:{
-            'content-type': 'application/x-www-form-urlencoded'
-        },
-        withCredentials : true,
-        crossdomain : true,
-        url: 'http://localhost:3001/signIn',
-        data: qs.stringify({
-          username: username,
-          password: password,
-        })
-      });
-       console.log(response);
-       if(response.status===200){
-         handleLoginSuccess();
-       }
-    }catch(err){
-        console.log(err);
-    }
-}
+  function handleLoginSuccess(response) {
+    setWrongCredentials(false);
+    setIsAuthenticated(true);
+    setOpen(false);
+    setThemeMode(response.data.mode);
+    setChecked(response.data.mode === "dark" ? true : false);
+  }
 
-// function onGoogleClick(e){
-//   e.preventDefault();
-//   authenticateGoogle();
-// }
-
-
-// async function authenticateGoogle(){
-//   try{
-//     const response=await axios({
-//      method: 'get',
-//      withCredentials : true,
-//      crossdomain : true,
-//      url: 'http://localhost:3001/signIn/google',
-//    });
-//     console.log(response);
-//     if(response.status===200){
-//       handleLoginSuccess();
-//     }
-//  }catch(err){
-//      console.log(err);
-//  }
-// }
-
- function handleLoginSuccess(){
-  setIsAuthenticated(true);
-  setOpen(false);
- }
+  function handleLoginFailure() {
+    setWrongCredentials(true);
+  }
 
   function defaultComponentCall(component) {
     switch (component) {
@@ -105,45 +87,139 @@ function LoginCard() {
 
   return (
     <div>
-      <div className="container" id="container" ref={container}>
-        <div className="form-container sign-up-container">
-          <form action="#" className="form">
-            <h1>Create Account</h1>
-            <div className="social-container">
-              <a href="#" className="social text-accent">
-                <i className="fab fa-facebook-f"></i>
-              </a>
-              <a href="http://localhost:3001/signIn/google" className="social text-accent">
-                <i className="fab fa-google"></i>
-              </a>
-              <a href="#" className="social text-accent">
-                <i className="fab fa-linkedin-in"></i>
-              </a>
+      {!mobileView && (
+        <div className="container" id="container" ref={container}>
+          <div className="form-container sign-up-container">
+            <form action="#" className="form">
+              <h1>Create Account</h1>
+              <div className="social-container">
+                <a className="social text-accent">
+                  <i className="fab fa-facebook-f"></i>
+                </a>
+                <a
+                  href="http://localhost:3001/signIn/google"
+                  className="social text-accent"
+                >
+                  <i className="fab fa-google"></i>
+                </a>
+                <a className="social text-accent">
+                  <i className="fab fa-linkedin-in"></i>
+                </a>
+              </div>
+              <span>or use your email for registration</span>
+              <input type="text" placeholder="Name" className="form-control" />
+              <input
+                type="email"
+                placeholder="Email"
+                className="form-control"
+              />
+              <input
+                type="password"
+                placeholder="Password"
+                className="form-control"
+              />
+              <button className="ghost" onClick={onSignUp}>
+                Sign Up
+              </button>
+            </form>
+          </div>
+          <div className="form-container sign-in-container">
+            <form action="#" className="form">
+              <h1>Sign in</h1>
+              <div className="social-container">
+                <a className="social text-accent">
+                  <i className="fab fa-facebook-f"></i>
+                </a>
+                <a
+                  href="http://localhost:3001/signIn/google"
+                  className="social text-accent"
+                >
+                  <i className="fab fa-google"></i>
+                </a>
+                <a className="social text-accent">
+                  <i className="fab fa-linkedin-in"></i>
+                </a>
+              </div>
+              <span>or use your account</span>
+              <input
+                type="email"
+                placeholder="Email"
+                className="form-control"
+                onChange={(e) => setUsername(e.target.value)}
+                value={username}
+              />
+              <input
+                type="password"
+                placeholder="Password"
+                className="form-control"
+                onChange={(e) => setPassword(e.target.value)}
+                value={password}
+              />
+
+              {wrongCredentials && (
+                <h5 style={{ color: `red`, fontSize: `12px` }}>
+                  Please check your username and password!
+                </h5>
+              )}
+
+              <a className="text-accent">Forgot your password?</a>
+              <button className="ghost" onClick={handleSubmit}>
+                Sign In
+              </button>
+            </form>
+          </div>
+          <div className="overlay-container">
+            <div className="overlay">
+              <div className="overlay-panel overlay-left">
+                <h1>Welcome Back!</h1>
+                <p>
+                  To keep connected with us please login with your personal info
+                </p>
+                <button className="ghost" id="signIn" onClick={onSignIn}>
+                  Sign In
+                </button>
+              </div>
+              <div className="overlay-panel overlay-right">
+                <h1>Hello, Friend!</h1>
+                <p>Enter your personal details and start journey with us</p>
+                <button className="ghost" id="signUp" onClick={onSignUp}>
+                  Sign Up
+                </button>
+              </div>
             </div>
-            <span>or use your email for registration</span>
-            <input type="text" placeholder="Name" className="form-control" />
-            <input type="email" placeholder="Email" className="form-control" />
-            <input
-              type="password"
-              placeholder="Password"
-              className="form-control"
-            />
-            <button className="ghost" onClick={onSignUp}>
-              Sign Up
-            </button>
-          </form>
+          </div>
         </div>
-        <div className="form-container sign-in-container">
-          <form action="#" className="form">
+      )}
+      {mobileView && signIn && (
+        <div className="overlay-mobile-container" ref={container}>
+          <div className="overlay-signIn-mobile">
+            <div className="overlay-mobile-panel">
+              <h1>Welcome Back!</h1>
+              <p>
+                To keep connected with us please login with your personal info
+              </p>
+              <button className="ghost" id="signIn" onClick={enterCredentials}>
+                Sign In
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {mobileView && signIn && loginCredentials && (
+        <div className="form-container-mobile sign-in-mobile-container">
+          <form action="#" className="form-mobile">
             <h1>Sign in</h1>
             <div className="social-container">
-              <a href="#" className="social text-accent">
+              <a className="social text-accent">
                 <i className="fab fa-facebook-f"></i>
               </a>
-              <a  href="http://localhost:3001/signIn/google" className="social text-accent">
+              <a
+                href="http://localhost:3001/signIn/google"
+                className="social text-accent"
+              >
                 <i className="fab fa-google"></i>
               </a>
-              <a href="#" className="social text-accent">
+              <a className="social text-accent">
                 <i className="fab fa-linkedin-in"></i>
               </a>
             </div>
@@ -162,35 +238,70 @@ function LoginCard() {
               onChange={(e) => setPassword(e.target.value)}
               value={password}
             />
-            <a href="#" className="text-accent">
-              Forgot your password?
-            </a>
-            <button className="ghost"  onClick={handleSubmit}>
+
+            {wrongCredentials && (
+              <h5 style={{ color: `red`, fontSize: `12px` }}>
+                Please check your username and password!
+              </h5>
+            )}
+
+            <a className="text-accent">Forgot your password?</a>
+            <button className="ghost" onClick={handleSubmit}>
               Sign In
             </button>
           </form>
         </div>
-        <div className="overlay-container">
-          <div className="overlay">
-            <div className="overlay-panel overlay-left">
-              <h1>Welcome Back!</h1>
-              <p>
-                To keep connected with us please login with your personal info
-              </p>
-              <button className="ghost" id="signIn" onClick={onSignIn}>
-                Sign In
-              </button>
+      )}
+      {mobileView && !signIn && signUpCredentials && (
+        <div className="form-container-mobile sign-up-mobile-container">
+          <form action="#" className="form-mobile">
+            <h1>Create Account</h1>
+            <div className="social-container">
+              <a className="social text-accent">
+                <i className="fab fa-facebook-f"></i>
+              </a>
+              <a
+                href="http://localhost:3001/signIn/google"
+                className="social text-accent"
+              >
+                <i className="fab fa-google"></i>
+              </a>
+              <a className="social text-accent">
+                <i className="fab fa-linkedin-in"></i>
+              </a>
             </div>
-            <div className="overlay-panel overlay-right">
+            <span>or use your email for registration</span>
+            <input type="text" placeholder="Name" className="form-control" />
+            <input type="email" placeholder="Email" className="form-control" />
+            <input
+              type="password"
+              placeholder="Password"
+              className="form-control"
+            />
+            <button className="ghost" onClick={onSignUp}>
+              Sign Up
+            </button>
+          </form>
+        </div>
+      )}
+
+      {mobileView && !signIn && (
+        <div className="overlay-mobile-container" ref={container}>
+          <div className="overlay-signUp-mobile">
+            <div className="overlay-mobile-panel">
               <h1>Hello, Friend!</h1>
               <p>Enter your personal details and start journey with us</p>
-              <button className="ghost" id="signUp" onClick={onSignUp}>
+              <button
+                className="ghost"
+                id="signUp"
+                onClick={() => setSignUpCredential(true)}
+              >
                 Sign Up
               </button>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
