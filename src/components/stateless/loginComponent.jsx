@@ -1,5 +1,9 @@
 import React, { useState, useRef, useContext, useEffect } from "react";
-import {authenticateLocal} from "../../API/loginAPI";
+import { authenticateLocal } from "../../API/loginAPI";
+import { signUp } from "../../API/signupAPI";
+
+import validator from "email-validator";
+import passwordStrength from "check-password-strength";
 
 import ThemeContext, {
   LoginOverlayContext,
@@ -13,8 +17,11 @@ import { useMediaQuery } from "react-responsive";
 function LoginCard() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [passwordStr, setPasswordStr] = useState("");
 
   const [wrongCredentials, setWrongCredentials] = useState(false);
+  const [emailValidity, setEmailValidity] = useState(true);
 
   const container = useRef(null);
   const [component, setComponent] = useContext(defaultLoginContext);
@@ -56,8 +63,50 @@ function LoginCard() {
   function handleSubmit(e) {
     e.preventDefault();
     if (username !== "" && password !== "") {
-      authenticateLocal(username, password,handleLoginSuccess,handleLoginFailure);
+      authenticateLocal(
+        username,
+        password,
+        handleLoginSuccess,
+        handleLoginFailure
+      );
     }
+  }
+
+  function handleSignUp(e) {
+    e.preventDefault();
+    if (
+      username !== "" &&
+      password !== "" &&
+      emailValidity &&
+      passwordStr === "Strong"
+    ) {
+      signUp(email, username, password, () => {
+        setOpen(false);
+      });
+    } else {
+      alert(
+        "Please enter all information correctly and check if password is in strong category try using numbers and special symbols!!"
+      );
+    }
+  }
+
+  function validateEmail(email) {
+    if (validator.validate(email)) {
+      setEmailValidity(true);
+    } else {
+      setEmailValidity(false);
+    }
+    setEmail(email);
+  }
+
+  function passwordStrengthChecker(password) {
+    if (password) {
+      const value = passwordStrength(password).value;
+      setPasswordStr(value);
+    } else {
+      setPasswordStr("");
+    }
+    setPassword(password);
   }
 
   function handleLoginSuccess(response) {
@@ -93,7 +142,10 @@ function LoginCard() {
             <form action="#" className="form">
               <h1>Create Account</h1>
               <div className="social-container">
-                <a className="social text-accent">
+                <a
+                  className="social text-accent"
+                  href="http://localhost:3001/signIn/facebook"
+                >
                   <i className="fab fa-facebook-f"></i>
                 </a>
                 <a
@@ -102,23 +154,58 @@ function LoginCard() {
                 >
                   <i className="fab fa-google"></i>
                 </a>
-                <a className="social text-accent">
-                  <i className="fab fa-linkedin-in"></i>
+                <a
+                  className="social text-accent"
+                  href="http://localhost:3001/signIn/twitter"
+                >
+                  <i className="fab fa-twitter"></i>
                 </a>
               </div>
               <span>or use your email for registration</span>
-              <input type="text" placeholder="Name" className="form-control" />
+              <input
+                type="text"
+                placeholder="Name"
+                className="form-control"
+                onChange={(e) => setUsername(e.target.value)}
+                value={username}
+              />
               <input
                 type="email"
                 placeholder="Email"
                 className="form-control"
+                onChange={(e) => validateEmail(e.target.value)}
+                value={email}
               />
               <input
                 type="password"
                 placeholder="Password"
                 className="form-control"
+                onChange={(e) => {
+                  passwordStrengthChecker(e.target.value);
+                }}
+                value={password}
               />
-              <button className="ghost" onClick={onSignUp}>
+              {passwordStr === "Weak" && (
+                <h5 style={{ color: `red`, fontSize: `16px` }}>
+                  Strength:Weak
+                </h5>
+              )}
+              {passwordStr === "Medium" && (
+                <h5 style={{ color: `#eb6834`, fontSize: `16px` }}>
+                  Strength:Medium
+                </h5>
+              )}
+              {passwordStr === "Strong" && (
+                <h5 style={{ color: `Green`, fontSize: `16px` }}>
+                  Strength:Strong hmm good to go 🦾
+                </h5>
+              )}
+              {!emailValidity && (
+                <h5 style={{ color: `red`, fontSize: `12px` }}>
+                  Please check your email it's invalid!
+                </h5>
+              )}
+              <button className="ghost" onClick={handleSignUp}>
                 Sign Up
               </button>
             </form>
@@ -127,7 +214,10 @@ function LoginCard() {
             <form action="#" className="form">
               <h1>Sign in</h1>
               <div className="social-container">
-                <a className="social text-accent">
+                <a
+                  className="social text-accent"
+                  href="http://localhost:3001/signIn/facebook"
+                >
                   <i className="fab fa-facebook-f"></i>
                 </a>
                 <a
@@ -136,8 +226,11 @@ function LoginCard() {
                 >
                   <i className="fab fa-google"></i>
                 </a>
-                <a className="social text-accent">
-                  <i className="fab fa-linkedin-in"></i>
+                <a
+                  className="social text-accent"
+                  href="http://localhost:3001/signIn/twitter"
+                >
+                  <i className="fab fa-twitter"></i>
                 </a>
               </div>
               <span>or use your account</span>
@@ -211,7 +304,10 @@ function LoginCard() {
             <h1>Sign in</h1>
             <div className="social-container">
               <a className="social text-accent">
-                <i className="fab fa-facebook-f"></i>
+                <i
+                  className="fab fa-facebook-f"
+                  href="http://localhost:3001/signIn/facebook"
+                ></i>
               </a>
               <a
                 href="http://localhost:3001/signIn/google"
@@ -219,8 +315,10 @@ function LoginCard() {
               >
                 <i className="fab fa-google"></i>
               </a>
-              <a className="social text-accent">
-                <i className="fab fa-linkedin-in"></i>
+              <a className="social text-accent"
+                href="http://localhost:3001/signIn/twitter"
+              >
+                <i className="fab fa-twitter"></i>
               </a>
             </div>
             <span>or use your account</span>
@@ -257,7 +355,10 @@ function LoginCard() {
           <form action="#" className="form-mobile">
             <h1>Create Account</h1>
             <div className="social-container">
-              <a className="social text-accent">
+              <a
+                className="social text-accent"
+                href="http://localhost:3001/signIn/facebook"
+              >
                 <i className="fab fa-facebook-f"></i>
               </a>
               <a
@@ -266,19 +367,53 @@ function LoginCard() {
               >
                 <i className="fab fa-google"></i>
               </a>
-              <a className="social text-accent">
-                <i className="fab fa-linkedin-in"></i>
+              <a className="social text-accent"
+                 href="http://localhost:3001/signIn/twitter"
+              >
+                <i className="fab fa-twitter"></i>
               </a>
             </div>
             <span>or use your email for registration</span>
-            <input type="text" placeholder="Name" className="form-control" />
-            <input type="email" placeholder="Email" className="form-control" />
+            <input
+              type="text"
+              placeholder="Name"
+              className="form-control"
+              onChange={(e) => setUsername(e.target.value)}
+              value={username}
+            />
+            <input
+              type="email"
+              placeholder="Email"
+              className="form-control"
+              onChange={(e) => validateEmail(e.target.value)}
+              value={email}
+            />
             <input
               type="password"
               placeholder="Password"
               className="form-control"
+              onChange={(e) => passwordStrengthChecker(e.target.value)}
+              value={password}
             />
-            <button className="ghost" onClick={onSignUp}>
+            {passwordStr === "Weak" && (
+              <h5 style={{ color: `red`, fontSize: `16px` }}>Strength:Weak</h5>
+            )}
+            {passwordStr === "Medium" && (
+              <h5 style={{ color: `#eb6834`, fontSize: `16px` }}>
+                Strength:Medium
+              </h5>
+            )}
+            {passwordStr === "Strong" && (
+              <h5 style={{ color: `Green`, fontSize: `16px` }}>
+                Strength:Strong hmm good 🦾
+              </h5>
+            )}
+            {!emailValidity && (
+              <h5 style={{ color: `red`, fontSize: `12px` }}>
+                Please check your email it's invalid!
+              </h5>
+            )}
+            <button className="ghost" onClick={handleSignUp}>
               Sign Up
             </button>
           </form>

@@ -9,6 +9,8 @@ const bodyParser = require("body-parser");
 const session = require("express-session");
 const passport = require("passport");
 const passportLocalMongoose = require("passport-local-mongoose");
+const TwitterStrategy=require("passport-twitter").Strategy;
+const FacebookStrategy=require("passport-facebook").Strategy;
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const findOrCreate = require("mongoose-findorcreate");
 var cors = require("cors");
@@ -50,6 +52,8 @@ const userSchema = new mongoose.Schema({
   email: String,
   password: String,
   googleId: String,
+  facebookId:String,
+  twitterId:String,
   preferedMode: String,
 });
 
@@ -77,7 +81,7 @@ passport.use(
       userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
     },
     function (accessToken, refreshToken, profile, cb) {
-      console.log(profile);
+      //console.log(profile);
       User.findOrCreate(
         { googleId: profile.id, username: profile.displayName },
         function (err, user) {
@@ -87,6 +91,30 @@ passport.use(
     }
   )
 );
+
+passport.use(new TwitterStrategy({
+  consumerKey: process.env.TWITTER_CONSUMER_KEY,
+  consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
+  callbackURL: process.env.TWITTER_URI,
+},
+function(token, tokenSecret, profile, cb) {
+  User.findOrCreate({ username:profile.displayName,twitterId: profile.id }, function (err, user) {
+    return cb(err, user);
+  });
+}
+));
+passport.use(new FacebookStrategy({
+  clientID: process.env.FACEBOOK_APP_ID,
+  clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+  callbackURL: process.env.FACEBOOK_URI,
+},
+function(accessToken, refreshToken, profile, cb) {
+  //console.log(profile);
+  User.findOrCreate({ username:profile.displayName,facebookId: profile.id }, function (err, user) {
+    return cb(err, user);
+  });
+}
+));
 
 passport.serializeUser(function (user, done) {
   done(null, user.id);
@@ -138,6 +166,26 @@ app.get(
   }
 );
 
+app.get('/signIn/facebook',
+  passport.authenticate('facebook'));
+
+app.get('/signIn/facebook/redirect',
+  passport.authenticate('facebook', { failureRedirect: 'http://localhost:3000' }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    res.redirect('http://localhost:3000');
+  });
+  
+app.get('/signIn/twitter',
+  passport.authenticate('twitter'));
+
+app.get('/signIn/twitter/redirect', 
+  passport.authenticate('twitter', { failureRedirect: 'http://localhost:3000' }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    res.redirect('http://localhost:3000');
+  });
+
 app
   .route("/signIn")
   .get(function (req, res) {
@@ -182,7 +230,7 @@ app
   });
 
 app.post("/signUp", function (req, res) {
-  User.register({ username: req.body.username }, req.body.password, function (
+  User.register({ username: req.body.username,email: req.body.email}, req.body.password, function (
     err,
     user
   ) {
@@ -210,6 +258,7 @@ app
         if (!err) {
           res.json({
             username: user.username,
+            email:user.email,
             mode: user.preferedMode,
             message: "success",
           });

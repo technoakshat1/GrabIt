@@ -73,7 +73,7 @@ function ProfileModalSheet(props) {
   function onFetchUserData(response){
     dispatch({
       type: FETCH_USER_DATA,
-      payload: response.data.username,
+      payload: response.data,
     });
   }
 
@@ -145,7 +145,7 @@ function ProfileModalSheet(props) {
       {isAuthenticated && (
         <div>
           <h3>{userInfo.length !== 0 ? userInfo[0].username : null}</h3>
-          <p>extra information</p>
+          <p>{userInfo[0]!==undefined&&userInfo[0].email}</p>
           <hr style={{ width: "100%" }} />
           <div className="modal-options">
             <FontAwesomeIcon icon={faUser} className="modal-icons" />
