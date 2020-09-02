@@ -7,7 +7,7 @@ import HeaderComponent from "../components/statefull/header";
 
 import GlobalTheme from "../components/stateless/themeComponent";
 
-import LoginComponent from "../components/stateless/loginComponent";
+import LoginComponent from "../components/statefull/loginComponent";
 
 import { useMediaQuery } from "react-responsive";
 

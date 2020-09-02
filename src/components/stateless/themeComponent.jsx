@@ -34,7 +34,18 @@ function GlobalTheme() {
     <Helmet>
       <style type="text/css">{`
           body{
-            background-color:${currentTheme.primaryColorDark};
+            background-color:${currentTheme.primaryColorMedium};
+            font-family: 'Source Sans Pro', sans-serif;
+            font-weight:thin;
+          }
+
+          .button-profile{
+            border-color: ${theme==="dark"?"#6d6d6d":"#DDDDDD"};
+
+          }
+
+          .button-profile:hover{
+            box-shadow:${theme==="dark"&& `0 1px 6px 0 rgba(252, 250, 250,0.5)`};
           }
 
           .logo{
@@ -44,25 +55,37 @@ function GlobalTheme() {
           .header{
             background-color: ${currentTheme.primaryColorMedium};
             color: ${currentTheme.textColor};
+            border-color: ${theme==="dark"?"#6d6d6d":currentTheme.primaryColorDark};
           }
 
           .profile-modal{
             background-color:${currentTheme.primaryColorMedium};
             color:${currentTheme.textColor};
+            box-shadow:${theme==="dark"&&`rgba(252, 250, 250,0.5) 0px 2px 16px;`};
           }
           .searchBox{
-            background-color: ${currentTheme.primaryColorMedium};
-            border-color:${currentTheme.primaryColorLight};
+            background-color:${currentTheme.primaryColorMedium} ;
+            border-color:${theme==="dark"?"#6d6d6d":currentTheme.primaryColorLight};
             color:${currentTheme.textColor};
           }
           .searchBox:focus{
            outline: none;
-           border-color:${currentTheme.secondaryColor}; /*for dark theme color to be passed via context*/
+           /*border-color:${currentTheme.secondaryColor};*/ /*for dark theme color to be passed via context*/
+          }
+
+          .searchBox:focus,.searchBox:hover{
+            box-shadow:${theme==="dark"&& `0 1px 6px 0 rgba(252, 250, 250,0.5)`}
+          }
+          .searchBox-AutoSuggest{
+            box-shadow:${theme==="dark"&& `0 4px 6px 0 rgba(252, 250, 250,0.5)`}
+          }
+          .modal-wrapper:hover{
+            background-color:${theme==="dark"? `rgba(252, 250, 250,0.5)`:`rgba(0, 0, 0, 0.12)`};
           }
           .searchButton{
             color:${currentTheme.primaryColor};
             background-color:${currentTheme.primaryColorMedium};
-            border-color:${currentTheme.primaryColorLight};
+            border-color:${theme==="dark"?"#6d6d6d":currentTheme.primaryColorLight};
           }
           .searchButton:hover{
             color:${currentTheme.textColor};/*for dark theme color to be passed via context*/

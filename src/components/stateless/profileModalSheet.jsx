@@ -1,4 +1,4 @@
-import React, { useState,useContext, useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -138,47 +138,39 @@ function ProfileModalSheet(props) {
       className="profile-modal"
       ref={wrapperRef}
     >
-      <div onClick={props.onClose}>
-        <FontAwesomeIcon icon={faTimesCircle} className="close-icon" />
-      </div>
-
       {isAuthenticated && (
         <div>
-          <h3>{userInfo.length !== 0 ? userInfo[0].username : null}</h3>
-          <p>{userInfo[0]!==undefined&&userInfo[0].email}</p>
-          <hr style={{ width: "100%" }} />
+          <div className="modal-wrapper">
           <div className="modal-options">
-            <FontAwesomeIcon icon={faUser} className="modal-icons" />
-            <h5 className="modal-text"> Manage account</h5>
+            <h5 className="modal-text">Manage account</h5>
           </div>
-
+          </div>
+          <div className="modal-wrapper">
           <div className="modal-options">
-            <FontAwesomeIcon
-              icon={faBoxOpen}
-              className="modal-icons"
-              id="MyOrders"
-            />
             <h5 className="modal-text">Manage Orders</h5>
           </div>
-
-          <div className="modal-options">
-            <FontAwesomeIcon icon={faHistory} className="modal-icons" />
-            <h5 className="modal-text"> history</h5>
           </div>
-
+          <div className="modal-wrapper">
           <div className="modal-options">
-            <FontAwesomeIcon icon={faPercent} className="modal-icons" />
-            <h5 className="modal-text"> offers</h5>
+            <h5 className="modal-text">history</h5>
           </div>
+          </div>
+          <div className="modal-wrapper">
+          <div className="modal-options">
+            <h5 className="modal-text">offers</h5>
+          </div>
+          </div>
+          <div className="modal-wrapper">
           <div className="modal-options" onClick={handleLogOut}>
-            <FontAwesomeIcon icon={faSignOutAlt} className="modal-icons" />
             <h5 className="modal-text"> Logout</h5>
+          </div>
           </div>
         </div>
       )}
 
       {!isAuthenticated && (
         <span>
+         <div className="modal-wrapper">
           <div
             className="modal-options"
             onClick={() => {
@@ -187,9 +179,10 @@ function ProfileModalSheet(props) {
               return null;
             }}
           >
-            <FontAwesomeIcon icon={faUserCheck} className="modal-icons" />
             <h5 className="modal-text"> Login</h5>
           </div>
+          </div>
+          <div className="modal-wrapper">
           <div
             className="modal-options"
             onClick={() => {
@@ -198,14 +191,13 @@ function ProfileModalSheet(props) {
               return null;
             }}
           >
-            <FontAwesomeIcon icon={faUserPlus} className="modal-icons" />
             <h5 className="modal-text"> SignUp</h5>
+          </div>
           </div>
         </span>
       )}
-
+      <div className="modal-wrapper">
       <div className="modal-options">
-        <FontAwesomeIcon icon={faSun} className="modal-icons" />
         <h5 className="modal-text"> Dark Mode</h5>
 
         <MaterialSwitch
@@ -216,6 +208,7 @@ function ProfileModalSheet(props) {
           onHandleColor={`${currentTheme.secondaryColorLight}`}
           onColor={`${currentTheme.secondaryColor}`}
         />
+      </div>
       </div>
     </div>
   );

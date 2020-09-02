@@ -6,7 +6,7 @@ const AppTheme={
         primaryColorLight:"#eeeeee",
         primaryColorDark:"#e0e0e0",
         secondaryColor:"#4a148c",
-        secondaryColorLight:"#7c43bd"
+        secondaryColorLight:"#7c43bd",
     },
 
      dark:{

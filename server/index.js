@@ -55,6 +55,7 @@ const userSchema = new mongoose.Schema({
   facebookId:String,
   twitterId:String,
   preferedMode: String,
+  profileImage:String,
 });
 
 userSchema.plugin(passportLocalMongoose);
@@ -81,9 +82,8 @@ passport.use(
       userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
     },
     function (accessToken, refreshToken, profile, cb) {
-      //console.log(profile);
       User.findOrCreate(
-        { googleId: profile.id, username: profile.displayName },
+        { googleId: profile.id, username: profile.displayName,profileImage:profile.photos[0].value },
         function (err, user) {
           return cb(err, user);
         }
@@ -98,7 +98,8 @@ passport.use(new TwitterStrategy({
   callbackURL: process.env.TWITTER_URI,
 },
 function(token, tokenSecret, profile, cb) {
-  User.findOrCreate({ username:profile.displayName,twitterId: profile.id }, function (err, user) {
+  // console.log(profile);
+  User.findOrCreate({ username:profile.displayName,twitterId: profile.id,profileImage:profile.photos[0].value }, function (err, user) {
     return cb(err, user);
   });
 }
@@ -109,7 +110,7 @@ passport.use(new FacebookStrategy({
   callbackURL: process.env.FACEBOOK_URI,
 },
 function(accessToken, refreshToken, profile, cb) {
-  //console.log(profile);
+  // console.log(profile);
   User.findOrCreate({ username:profile.displayName,facebookId: profile.id }, function (err, user) {
     return cb(err, user);
   });
@@ -259,6 +260,7 @@ app
           res.json({
             username: user.username,
             email:user.email,
+            profileImg:user.profileImage,
             mode: user.preferedMode,
             message: "success",
           });

@@ -20,7 +20,7 @@ function SearchBox() {
   return (
     <div>
       <form>
-        <div>
+        <div >
           <input
             className="searchBox"
             type="text"

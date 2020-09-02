@@ -9,7 +9,6 @@ export async function fetchUserData(onSuccess) {
       crossdomain: true,
       url: "http://localhost:3001/userInfo",
     });
-    console.log(response);
     if (response.data.message === "success") {
       onSuccess(response);
     }
@@ -39,7 +38,7 @@ export async function getTheme(successCallback) {
   }
 
 
-export async function isLoggedIn(authenticatedCallback){
+export async function isLoggedIn(authenticatedCallback,unAuthenticatedCallback){
     const response=await axios({
       method: 'get',
       withCredentials : true,
@@ -51,6 +50,8 @@ export async function isLoggedIn(authenticatedCallback){
 
     if(response.data.message==="Authenticated"){
       authenticatedCallback();
+    }else{
+      unAuthenticatedCallback();
     }
 }
 

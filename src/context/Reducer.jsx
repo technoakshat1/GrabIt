@@ -11,6 +11,7 @@ export default function Reducer(state, action) {
       return [...clearedUserData];
      
     case FETCH_USER_DATA:
-      return [...state, { username: action.payload.username ,email: action.payload.email}];
+      // console.log(action.payload)
+      return [...state, { username: action.payload.username ,email: action.payload.email,profileImage: action.payload.profileImg}];
   }
 }

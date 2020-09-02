@@ -303,10 +303,11 @@ function LoginCard() {
           <form action="#" className="form-mobile">
             <h1>Sign in</h1>
             <div className="social-container">
-              <a className="social text-accent">
+              <a className="social text-accent"
+                 href="http://localhost:3001/signIn/facebook"
+              >
                 <i
                   className="fab fa-facebook-f"
-                  href="http://localhost:3001/signIn/facebook"
                 ></i>
               </a>
               <a
