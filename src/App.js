@@ -1,4 +1,4 @@
-import React, { useState ,useReducer,useEffect} from "react";
+import React, { useState ,useReducer,useEffect,useRef} from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
@@ -7,7 +7,8 @@ import ThemeContext, {
   AuthenticationContext,
   LoginOverlayContext,
   defaultLoginContext,
-  ApiContext
+  ApiContext,
+  HeroRef
 } from "./context/context.jsx";
 
 import {FETCH_USER_DATA}from "./context/action.types";
@@ -27,6 +28,7 @@ function App() {
   const loginOverlay = useState(false);
   const defaultLoginComponent=useState("signIn");
   const [userInfo,dispatch]=useReducer(Reducer,[]);
+  const heroRef=useRef(null);
 
   useEffect(()=>{
     isLoggedIn(onSuccess,unAuthenticated);
@@ -55,6 +57,7 @@ function App() {
           <LoginOverlayContext.Provider value={[...loginOverlay]}>
            <defaultLoginContext.Provider value={[...defaultLoginComponent]}>
             <ApiContext.Provider value={{userInfo,dispatch}}>
+             <HeroRef.Provider value={{heroRef}}>
             <Router>
               <Switch>
                 <Route exact path="/">
@@ -62,6 +65,7 @@ function App() {
                 </Route>
               </Switch>
             </Router>
+            </HeroRef.Provider>
             </ApiContext.Provider>
             </defaultLoginContext.Provider>
           </LoginOverlayContext.Provider>

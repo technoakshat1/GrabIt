@@ -1,18 +1,5 @@
 import React, { useContext, useEffect, useRef } from "react";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faUser,
-  faBoxOpen,
-  faHistory,
-  faPercent,
-  faSun,
-  faTimesCircle,
-  faUserCheck,
-  faUserPlus,
-  faSignOutAlt,
-} from "@fortawesome/free-solid-svg-icons";
-
 import ThemeContext, {
   SwitchContext,
   AuthenticationContext,

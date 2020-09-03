@@ -58,6 +58,7 @@ export async function isLoggedIn(authenticatedCallback,unAuthenticatedCallback){
 
 export async function authenticateLocal(username, password,loginSuccess,loginFailure) {
     try {
+      
       const response = await axios({
         method: "post",
         headers: {
@@ -67,7 +68,7 @@ export async function authenticateLocal(username, password,loginSuccess,loginFai
         crossdomain: true,
         url: "http://localhost:3001/signIn",
         data: qs.stringify({
-          username: username,
+          username:username,
           password: password,
         }),
       });

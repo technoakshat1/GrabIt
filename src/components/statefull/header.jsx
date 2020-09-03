@@ -12,7 +12,7 @@ import {
 
 import { useMediaQuery } from "react-responsive";
 
-import { AuthenticationContext, ApiContext } from "../../context/context";
+import { AuthenticationContext, ApiContext,HeroRef } from "../../context/context";
 
 import ProfileModalSheet from "../stateless/profileModalSheet";
 import SearchBox from "./searchbox";
@@ -20,14 +20,13 @@ import SideDrawer from "../stateless/sideDrawer";
 
 function HeaderComponent() {
   const { userInfo } = useContext(ApiContext);
+  const {heroRef}=useContext(HeroRef);
 
-  const wrapperRef = useRef(null);
-  useOutside(wrapperRef);
 
   const [isProfileClicked, setIsProfileClicked] = useState(false);
-  const mobileView = useMediaQuery({ query: "(max-width: 420px)" });
+  const mobileView = useMediaQuery({ query: "(max-width: 667px)" });
 
-  const [classList, setClassList] = useState("side-drawer");
+  const [isSticky,setSticky]=useState(false);
 
   const [searchBoxRender, setSearchBoxRender] = useState(false);
 
@@ -37,8 +36,13 @@ function HeaderComponent() {
     setIsProfileClicked(!isProfileClicked);
   }
 
-  function onSideDrawer() {
-    setClassList("side-drawer open");
+
+
+  function handleScroll() {
+    if (heroRef.current) {
+      setSticky(heroRef.current.getBoundingClientRect().top<=50);
+      //console.log(heroRef.current.getBoundingClientRect().top);
+    }
   }
 
   function searchBoxClicked() {
@@ -49,29 +53,16 @@ function HeaderComponent() {
     setSearchBoxRender(false);
   }
 
-  function useOutside(ref) {
-    useEffect(() => {
-      /**
-       * Alert if clicked on outside of element
-       */
-      function handleClickOutside(event) {
-        if (ref.current && !ref.current.contains(event.target)) {
-          setClassList("side-drawer"); //close profile modal sheet if someone clicks outside of it
-        }
-      }
+  useEffect(()=>{
+    window.addEventListener('scroll', handleScroll);
 
-      // Bind the event listener
-      document.addEventListener("touchstart", handleClickOutside);
-      return () => {
-        // Unbind the event listener on clean up
-        document.removeEventListener("touchstart", handleClickOutside);
-      };
-    }, [ref]);
-  }
+    return () => {
+      window.removeEventListener('scroll', () => handleScroll);
+    };
+  },[]);
 
   return (
-    <div>
-      <div className="header">
+      <div className={`header${isSticky ? ' scroll-header' : ''}`}>
         <div className="navbar">
           {/* {mobileView && !searchBoxRender && isAuthenticated && (
             <FontAwesomeIcon
@@ -167,7 +158,6 @@ function HeaderComponent() {
           )}
         </div>
       </div>
-    </div>
   );
 }
 

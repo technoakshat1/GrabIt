@@ -9,6 +9,8 @@ import GlobalTheme from "../components/stateless/themeComponent";
 
 import LoginComponent from "../components/statefull/loginComponent";
 
+import HeroBox from "../components/stateless/Herobox";
+
 import { useMediaQuery } from "react-responsive";
 
 function HomePage() {
@@ -58,13 +60,16 @@ function HomePage() {
           display: `flex`,
           background: `rgba(0, 0, 0, 0.3)`,
           justifyContent: `center`,
-          height: `80rem`,
+          height: `100rem`,
+          marginTop:`-40rem`,
+          left:`9rem`
         }}
       >
         <div ref={wrapperRef}>
           <LoginComponent />
         </div>
       </Overlay>
+      <HeroBox/>
     </div>
   );
 }

@@ -37,6 +37,8 @@ function GlobalTheme() {
             background-color:${currentTheme.primaryColorMedium};
             font-family: 'Source Sans Pro', sans-serif;
             font-weight:thin;
+            overflow-x:hidden;
+            overflow-y:scroll;
           }
 
           .button-profile{

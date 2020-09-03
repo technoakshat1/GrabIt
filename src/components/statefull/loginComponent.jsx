@@ -29,7 +29,7 @@ function LoginCard() {
   const setOpen = useContext(LoginOverlayContext)[1];
   const setThemeMode = useContext(ThemeContext)[1];
   const setChecked = useContext(SwitchContext)[1];
-  const mobileView = useMediaQuery({ query: "(max-width: 420px)" });
+  const mobileView = useMediaQuery({ query: "(max-width: 667px)" });
   const [signIn, setSignIn] = useState(false);
   const [loginCredentials, setLoginCredential] = useState(false);
   const [signUpCredentials, setSignUpCredential] = useState(false);
@@ -168,6 +168,7 @@ function LoginCard() {
                 className="form-control"
                 onChange={(e) => setUsername(e.target.value)}
                 value={username}
+                autoComplete="off"
               />
               <input
                 type="email"
@@ -175,6 +176,7 @@ function LoginCard() {
                 className="form-control"
                 onChange={(e) => validateEmail(e.target.value)}
                 value={email}
+                autoComplete="off"
               />
               <input
                 type="password"
@@ -235,8 +237,8 @@ function LoginCard() {
               </div>
               <span>or use your account</span>
               <input
-                type="email"
-                placeholder="Email"
+                type="text"
+                placeholder="Username"
                 className="form-control"
                 onChange={(e) => setUsername(e.target.value)}
                 value={username}
@@ -324,8 +326,8 @@ function LoginCard() {
             </div>
             <span>or use your account</span>
             <input
-              type="email"
-              placeholder="Email"
+              type="text"
+              placeholder="Username"
               className="form-control"
               onChange={(e) => setUsername(e.target.value)}
               value={username}
@@ -381,6 +383,7 @@ function LoginCard() {
               className="form-control"
               onChange={(e) => setUsername(e.target.value)}
               value={username}
+              autoComplete="off"
             />
             <input
               type="email"
@@ -388,6 +391,7 @@ function LoginCard() {
               className="form-control"
               onChange={(e) => validateEmail(e.target.value)}
               value={email}
+              autoComplete="off"
             />
             <input
               type="password"
@@ -395,6 +399,7 @@ function LoginCard() {
               className="form-control"
               onChange={(e) => passwordStrengthChecker(e.target.value)}
               value={password}
+              autoComplete="off"
             />
             {passwordStr === "Weak" && (
               <h5 style={{ color: `red`, fontSize: `16px` }}>Strength:Weak</h5>
