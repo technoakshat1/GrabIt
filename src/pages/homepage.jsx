@@ -27,13 +27,13 @@ function HomePage() {
 
   const mobileView = useMediaQuery({ query: "(max-width: 420px)" });
   const [props,setAnimation]=useSpring(
-    ()=>(!mobileView?{opacity:0,config:config.molasses,delay:1000}:{opacity:1})
+    ()=>({opacity:0,config:config.slow})
   );
 
   function handleScroll(){
-    if(heroRef.current.getBoundingClientRect().top<=-200&&!mobileView){
-      setAnimation({opacity:1});
-    }else if(!mobileView){
+    if(heroRef.current.getBoundingClientRect().top<=-200){
+      setAnimation({opacity:1,delay:200});
+    }else{
       setAnimation({opacity:0});
     }
    
