@@ -41,7 +41,7 @@ function HeaderComponent() {
   function handleScroll() {
     if (heroRef.current) {
       setSticky(heroRef.current.getBoundingClientRect().top<=50);
-      //console.log(heroRef.current.getBoundingClientRect().top);
+      // console.log(heroRef.current.getBoundingClientRect().top);
     }
   }
 
@@ -59,7 +59,7 @@ function HeaderComponent() {
     return () => {
       window.removeEventListener('scroll', () => handleScroll);
     };
-  },[]);
+  });
 
   return (
       <div className={`header${isSticky ? ' scroll-header' : ''}`}>

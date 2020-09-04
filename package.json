@@ -43,6 +43,7 @@
     "react-responsive": "^8.1.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
+    "react-spring": "^9.0.0-rc.3",
     "react-switch": "^5.0.1",
     "reactstrap": "^8.5.1"
   },

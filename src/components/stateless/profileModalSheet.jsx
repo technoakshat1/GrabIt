@@ -8,6 +8,8 @@ import ThemeContext, {
   ApiContext,
 } from "../../context/context";
 
+import {useSpring,animated,config} from "react-spring";
+
 
 import {useMediaQuery} from "react-responsive";
 
@@ -28,6 +30,12 @@ function ProfileModalSheet(props) {
 
   const wrapperRef = useRef(null);
   useOutside(wrapperRef);
+
+  const profileModalProps=useSpring({
+    from:{opacity:0},
+    opacity:1,
+    config:config.gentle,
+  });
 
   const { userInfo, dispatch } = useContext(ApiContext);
 
@@ -121,9 +129,10 @@ function ProfileModalSheet(props) {
   }
 
   return (
-    <div
+    <animated.div
       className="profile-modal"
       ref={wrapperRef}
+      style={profileModalProps}
     >
       {isAuthenticated && (
         <div>
@@ -197,7 +206,7 @@ function ProfileModalSheet(props) {
         />
       </div>
       </div>
-    </div>
+    </animated.div>
   );
 }
 

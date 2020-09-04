@@ -38,6 +38,7 @@ function LoginCard() {
     setComponent("signUp");
     if (!mobileView) {
       container.current.classList.add("right-panel-active");
+      console.log(container.current.classList);
     } else {
       setSignIn(false);
     }
@@ -57,6 +58,7 @@ function LoginCard() {
   }
 
   useEffect((ref) => {
+    console.log(component);
     defaultComponentCall(component);
   });
 
@@ -137,7 +139,7 @@ function LoginCard() {
   return (
     <div>
       {!mobileView && (
-        <div className="container" id="container" ref={container}>
+        <div className="l-container" id="container" ref={container}>
           <div className="form-container sign-up-container">
             <form action="#" className="form">
               <h1>Create Account</h1>

@@ -5,7 +5,7 @@ import ThemeContext, { SwitchContext } from "../../context/context";
 
 import AppTheme from "../../AppTheme";
 
-import {getTheme} from "../../API/loginAPI";
+import { getTheme } from "../../API/loginAPI";
 
 function GlobalTheme() {
   const [theme, setTheme] = useContext(ThemeContext);
@@ -41,13 +41,36 @@ function GlobalTheme() {
             overflow-y:scroll;
           }
 
+          .Categories-background{
+            background-color:${currentTheme.secondaryColor};
+            color:${theme === "dark" ? "#ffff" :`${currentTheme.primaryColorMedium}` };
+          }
+
+          .Categories-background h1{
+            font-family:'Pacifico';
+            padding:2rem;
+          }
+
+          .category-card-container{
+            background-color:${theme==='dark'?`${currentTheme.primaryColorMedium}`:"#fdd835"};
+          }
+
+          .card-footer{
+            font-family:'Source Sans Pro';
+            font-weight:800;
+            color:${currentTheme.textColor};
+            background-color:${theme==='dark'?`${currentTheme.primaryColorMedium}`:"#fdd835"};
+          }
+
           .button-profile{
-            border-color: ${theme==="dark"?"#6d6d6d":"#DDDDDD"};
+            border-color: ${theme === "dark" ? "#6d6d6d" : "#DDDDDD"};
 
           }
 
           .button-profile:hover{
-            box-shadow:${theme==="dark"&& `0 1px 6px 0 rgba(252, 250, 250,0.5)`};
+            box-shadow:${
+              theme === "dark" && `0 1px 6px 0 rgba(252, 250, 250,0.5)`
+            };
           }
 
           .logo{
@@ -57,41 +80,63 @@ function GlobalTheme() {
           .header{
             background-color: ${currentTheme.primaryColorMedium};
             color: ${currentTheme.textColor};
-            border-color: ${theme==="dark"?"#6d6d6d":currentTheme.primaryColorDark};
+            border-color: ${
+              theme === "dark" ? "#6d6d6d" : currentTheme.primaryColorDark
+            };
           }
 
           .profile-modal{
             background-color:${currentTheme.primaryColorMedium};
             color:${currentTheme.textColor};
-            box-shadow:${theme==="dark"&&`rgba(252, 250, 250,0.5) 0px 2px 16px;`};
+            box-shadow:${
+              theme === "dark" && `rgba(252, 250, 250,0.5) 0px 2px 16px;`
+            };
           }
           .searchBox{
             background-color:${currentTheme.primaryColorMedium} ;
-            border-color:${theme==="dark"?"#6d6d6d":currentTheme.primaryColorLight};
+            border-color:${
+              theme === "dark" ? "#6d6d6d" : currentTheme.primaryColorLight
+            };
             color:${currentTheme.textColor};
           }
           .searchBox:focus{
            outline: none;
-           /*border-color:${currentTheme.secondaryColor};*/ /*for dark theme color to be passed via context*/
+           /*border-color:${
+             currentTheme.secondaryColor
+           };*/ /*for dark theme color to be passed via context*/
           }
 
           .searchBox:focus,.searchBox:hover{
-            box-shadow:${theme==="dark"&& `0 1px 6px 0 rgba(252, 250, 250,0.5)`}
+            box-shadow:${
+              theme === "dark" && `0 1px 6px 0 rgba(252, 250, 250,0.5)`
+            }
           }
           .searchBox-AutoSuggest{
-            box-shadow:${theme==="dark"&& `0 4px 6px 0 rgba(252, 250, 250,0.5)`}
+            box-shadow:${
+              theme === "dark" && `0 4px 6px 0 rgba(252, 250, 250,0.5)`
+            }
           }
           .modal-wrapper:hover{
-            background-color:${theme==="dark"? `rgba(252, 250, 250,0.5)`:`rgba(0, 0, 0, 0.12)`};
+            background-color:${
+              theme === "dark"
+                ? `rgba(252, 250, 250,0.5)`
+                : `rgba(0, 0, 0, 0.12)`
+            };
           }
           .searchButton{
             color:${currentTheme.primaryColor};
             background-color:${currentTheme.primaryColorMedium};
-            border-color:${theme==="dark"?"#6d6d6d":currentTheme.primaryColorLight};
+            border-color:${
+              theme === "dark" ? "#6d6d6d" : currentTheme.primaryColorLight
+            };
           }
           .searchButton:hover{
-            color:${currentTheme.textColor};/*for dark theme color to be passed via context*/
-            background-color:${currentTheme.primaryColorDark};/*for dark theme color to be passed via context*/
+            color:${
+              currentTheme.textColor
+            };/*for dark theme color to be passed via context*/
+            background-color:${
+              currentTheme.primaryColorDark
+            };/*for dark theme color to be passed via context*/
           }
 
           .login-card{
