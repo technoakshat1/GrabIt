@@ -4,12 +4,160 @@
   font-weight: 300;
   position: relative;
   top: 7px;
+  cursor: pointer;
+}
+
+.login-overlay{
+  background-color: rgba(0, 0, 0, 0.8);
+  position:fixed;
+  top:0rem;
+  left:0rem;
+  width:100%;
+  height:100%;
+  align-items:center;
+  z-index:7;
+}
+
+
+.account-verification-welcome{
+  position: relative;
+  top:5rem;
+  left:21.5rem;
+}
+
+.account-verification-welcome h1{
+  margin-top:5rem;
+}
+
+.required{
+  color:red;
+}
+
+.account-verification-welcome img{
+  position: relative;
+  display: inline;
+  width:10%;
+  height:7.3rem;
+  left:0rem;
+  border-radius:50%;
+  object-fit: fill;
+  object-position:center;
+  margin:2rem;
+}
+
+.account-verification-placeholder{
+  position: relative;
+  top:2rem;
+  display:inline;
+  font-size:6rem;
+  left:4rem;
+  margin-right:2rem;
+}
+
+.account-verification-welcome h3{
+  position: relative;
+  left:4rem;
+  display: inline-block;
+}
+
+.account-verification-form{
+  position: relative;
+  margin-bottom:4rem;
+  top:5rem;
+  width:40%;
+  left:21.5rem;
+  font-family: "Source Sans Pro";
+}
+
+.label-first-name{
+  font-size: 1.4rem;
+}
+
+.progress-bar-container{
+  height:120px;
+  width:120px;
+  animation: rotate 2s linear infinite;
+}
+
+.loader{
+  margin:1rem;
+  width: 120px;
+  height: 120px;
+  transform: translate(-50%,-50%);
+}
+
+.signUp-loader{
+  position:absolute;
+  top:56%;
+  left:45.5%;
+}
+
+.login-loader{
+  position:absolute;
+  top:56%;
+  left:45%;
+}
+
+@keyframes rotate{
+  100%{
+   transform: rotate(360deg);
+  }
+ }
+
+.progress-bar{
+  fill:transparent;
+  stroke-width: 5px;
+}
+
+.notification-box{
+  display:flex;
+  position: fixed;
+  z-index:800;
+  left:19rem;
+  height:23%;
+  width:40rem;
+  opacity:0.96;
+  background-color:#90a4ae;
+  color:white;
+  padding:10px;
+  font-size:1.3rem;
+}
+
+.life{
+  position: absolute;
+  height:0.67rem;
+  background-color:#303f9f;
+  left:0rem;
+  top:8rem;
+  opacity:1;
+}
+
+.video-player-section{
+  height:100%;
+  width:100%
+}
+
+.video-format{
+  align-items: center;
+  position: relative;
+  top:20rem;
+  left:2rem;
+  border-radius: 24px;
+  height: 20rem;
+  width:60rem;
 }
 
 .category-section{
   position: relative;
   top:40rem;
   margin-bottom:5rem;
+}
+
+.footer-video-box{
+  position: relative;
+  top:33rem;
+  left:0.5rem;
+  padding-bottom: 4rem;
 }
 
 
@@ -62,40 +210,50 @@
 }
 
 .hero-box{
-  position: absolute;;
-  top:5.5rem;
-  border-radius:12px;
-  width: 60rem;
-  height:25rem;
-  left:9.6rem;
-  z-index:-1;
-  display:flex;
+  z-index:0;
 }
 
 
 .hero-text{
   position:absolute;
   font-family:'Source Sans Pro';
+  top:8rem;
+  left:11rem;
   font-size:18px;
   justify-content:center;
   text-align:justify;
-  top:4rem;
-  left:2rem;
   align-items:center;
   color: #ffffff;/*don't change this color at any cost in dark mode*/
   z-index:-1;
 }
 
+.hero-text h1{
+  z-index:-1;
+}
+
+.hero-text h2{
+  z-index: -1;
+}
+
 .hero-text p{
   font-weight:200;
   font-size:18px;
+  z-index:-1;
+}
+
+.hero-box button{
+  position: absolute;
+  top:25rem;
+  left:11rem;
 }
 
 .hero-opacity{
   position: absolute;
+  top:5rem;
+  left:9.6rem;
   background-color:#000000;
   border-radius:12px;
-  z-index:-1;
+  z-index:-4;
 }
 
 .hero-image{
@@ -104,8 +262,8 @@
   height:25rem;
   object-fit:cover;
   object-position:100% 30%;
+  z-index: -4;
   /* opacity:0.35; */
-  z-index:-1;
 }
 
 .header {
@@ -119,6 +277,7 @@
   /* box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3); */
   /* font-family: 'Roboto Condensed', sans-serif; */
   height: 60px;
+  z-index:2;
 }
 
 .scroll-header{
@@ -213,6 +372,9 @@
 /* react components statefull  */
 
 @media screen and (min-width: 900px) {
+  .account-verification-form,.account-verification-welcome{
+    left:13rem;
+  }
   .profile-modal {
     margin-left: -11rem;
   }
@@ -233,11 +395,6 @@
 }
 
 @media screen and (max-width:1050px){
-  .hero-box{
-    left:1.5rem;
-    width: 60rem;
-    height:30rem;
-  }
 
   .Categories-background{
     padding:1rem;
@@ -248,8 +405,12 @@
     height:30rem;
   }
 
-  .hero-text{
+  .hero-opacity{
     left:1.5rem;
+  }
+
+  .hero-text{
+    left:3rem;
     width: 55rem;
     height:20rem;
   }
@@ -265,6 +426,9 @@
 }
 
 @media screen and (max-width:999px){
+  .account-verification-form,.account-verification-welcome{
+    left:10rem;
+  }
   .hero-box{
     left:2.5rem;
     width: 53rem;
@@ -277,7 +441,7 @@
   }
 
   .hero-text{
-    left:1.5rem;
+    left:2rem;
     width: 48rem;
     height:20rem;
   }
@@ -293,6 +457,9 @@
 }
 
 @media screen and (max-width: 899px) {
+  .account-verification-form,.account-verification-welcome{
+    left:4rem;
+  }
   .profile-modal {
     margin-left: -11rem;
   }
@@ -333,6 +500,7 @@
 
   .button-profile {
     top: -15px;
+    z-index:6;
   }
   .hero-box{
     left:1rem;
@@ -346,7 +514,7 @@
   }
 
   .hero-text{
-    left:1.5rem;
+    left:2rem;
     width: 45rem;
     height:20rem;
   }
@@ -399,7 +567,7 @@
   }
 
   .hero-text{
-    left:1.5rem;
+    left:2rem;
     width: 40rem;
     height:20rem;
   }
@@ -428,7 +596,7 @@
   }
 
   .hero-text{
-    left:1.5rem;
+    left:2rem;
     width: 30rem;
     height:20rem;
   }
@@ -443,12 +611,34 @@
 }
 
 @media screen and (max-width: 667px) {
+  .account-verification-form,.account-verification-welcome{
+    left:0rem;
+  }
+
+  .notification-box{
+    left:0;
+    width:25rem;
+  }
+  .life{
+    left:0rem;
+    top:13.1rem;
+  }
+   
   .profile-modal {
     margin-left: -11.4rem;
   }
   .logo {
     top: -35px;
     left:0;
+  }
+
+  .hero-box button {
+    top:31rem;
+    left:2rem;
+  }
+
+  .video-format{
+    top:1rem;
   }
 
   .Categories-background{
@@ -494,7 +684,7 @@
   }
 
   .hero-text{
-    left:1.5rem;
+    left:2rem;
     width: 20rem;
     height:20rem;
   }
@@ -632,37 +822,28 @@
   right: 0px !important;
   max-height: calc(100vh - 100px) !important;
   overflow-y: auto !important;
-  z-index: 2 !important;
+  z-index: 6!important;
   min-width: 240px !important;
   display: block !important;
 }
 
-.close-icon {
-  margin-top: 5px;
-  margin-left: 14.1rem;
-  font-size: 20px;
-}
-
-.modal-icons {
-  font-size: 24px;
-}
 
 .modal-wrapper {
   line-height: 18px !important;
   margin: 0px !important;
   outline: none !important;
-  z-index:2;
+  z-index:10;
 }
 
 .modal-options {
   padding: 10px;
-  z-index:2;
+  z-index:10;
 }
 
 .modal-text {
   display: inline;
   margin: 6px;
-  z-index:2;
+  z-index:10;
 }
 
 #MyOrders {
@@ -790,7 +971,8 @@
   border-radius: 10px;
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
   position: relative;
-  top:18rem;
+  top:2rem;
+  left:14.8rem;
   overflow: hidden;
   width: 768px;
   max-width: 100%;
@@ -812,8 +994,8 @@
 
 .form-container-mobile {
   position: relative;
-  top: 10rem;
-  right: -0.2rem;
+  top: 2rem;
+  left: 5rem;
   height: 30rem;
   width: 22rem;
   border-radius: 2rem;
@@ -823,7 +1005,7 @@
   z-index: 2;
   border-radius: 2rem;
   width: 22rem;
-  border-radius: 2rem;
+  
 }
 
 .sign-up-mobile-container {

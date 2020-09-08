@@ -135,10 +135,10 @@ function ProfileModalSheet(props) {
       style={profileModalProps}
     >
       {isAuthenticated && (
-        <div>
+        <span style={{zIndex:`6`}}>
           <div className="modal-wrapper">
           <div className="modal-options">
-            <h5 className="modal-text">Manage account</h5>
+            <h5 className="modal-text">Manage Account</h5>
           </div>
           </div>
           <div className="modal-wrapper">
@@ -148,20 +148,20 @@ function ProfileModalSheet(props) {
           </div>
           <div className="modal-wrapper">
           <div className="modal-options">
-            <h5 className="modal-text">history</h5>
+            <h5 className="modal-text">History</h5>
           </div>
           </div>
           <div className="modal-wrapper">
           <div className="modal-options">
-            <h5 className="modal-text">offers</h5>
+            <h5 className="modal-text">Offers</h5>
           </div>
           </div>
           <div className="modal-wrapper">
           <div className="modal-options" onClick={handleLogOut}>
-            <h5 className="modal-text"> Logout</h5>
+            <h5 className="modal-text">Logout</h5>
           </div>
           </div>
-        </div>
+        </span>
       )}
 
       {!isAuthenticated && (
@@ -175,7 +175,7 @@ function ProfileModalSheet(props) {
               return null;
             }}
           >
-            <h5 className="modal-text"> Login</h5>
+            <h5 className="modal-text">Login</h5>
           </div>
           </div>
           <div className="modal-wrapper">
@@ -187,14 +187,14 @@ function ProfileModalSheet(props) {
               return null;
             }}
           >
-            <h5 className="modal-text"> SignUp</h5>
+            <h5 className="modal-text">SignUp</h5>
           </div>
           </div>
         </span>
       )}
       <div className="modal-wrapper">
       <div className="modal-options">
-        <h5 className="modal-text"> Dark Mode</h5>
+        <h5 className="modal-text">Dark Mode</h5>
 
         <MaterialSwitch
           height={18}

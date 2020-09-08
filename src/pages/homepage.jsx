@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useEffect } from "react";
+import React, { useContext, useRef, useEffect ,useState } from "react";
 import { Overlay } from "react-portal-overlay";
 
 import { LoginOverlayContext ,HeroRef } from "../context/context";
@@ -19,20 +19,23 @@ import CategoryCard from "../components/stateless/CategoryCard";
 
 import { Categories } from "../categories";
 
+import ReactPlayer from "react-player";
+
 function HomePage() {
   const [open, setOpen] = useContext(LoginOverlayContext);
   const wrapperRef = useRef(null);
   useOutside(wrapperRef);
   const {heroRef}=useContext(HeroRef);
+  const [video,setVideo]=useState(false);
 
   const mobileView = useMediaQuery({ query: "(max-width: 420px)" });
   const [props,setAnimation]=useSpring(
-    ()=>({opacity:0,config:config.slow})
+    ()=>({opacity:0,config:config.molasses})
   );
 
   function handleScroll(){
-    if(heroRef.current.getBoundingClientRect().top<=-200){
-      setAnimation({opacity:1,delay:200});
+    if(heroRef.current.getBoundingClientRect().top<=-80){
+      setAnimation({opacity:1});
     }else{
       setAnimation({opacity:0});
     }
@@ -55,6 +58,7 @@ function HomePage() {
       function handleClickOutside(event) {
         if (ref.current && !ref.current.contains(event.target)) {
           setOpen(false);
+          setVideo(false);
         }
       }
 
@@ -81,9 +85,10 @@ function HomePage() {
       <section>
         <GlobalTheme />
         <HeaderComponent />
+        <HeroBox onKnowMore={()=>setVideo(true)}/>
         <Overlay
-          open={open}
-          onClose={() => setOpen(false)}
+          open={video}
+          onClose={() => setVideo(false)}
           css={{
             display: `flex`,
             background: `rgba(0, 0, 0, 0.7)`,
@@ -95,11 +100,10 @@ function HomePage() {
             left: `0rem`,
           }}
         >
-          <div ref={wrapperRef}>
-            <LoginComponent />
+          <div className="video-format" ref={wrapperRef}>
+            <ReactPlayer url="https://youtu.be/Ap_nzWmDpP8" width={mobileView?"300px":"900px"} playing={video} height={mobileView?"500px":"400px"} onEnded={()=>setVideo(false)}/>
           </div>
         </Overlay>
-        <HeroBox />
       </section>
       <section className="category-section" >
         <animated.div className="Categories-background" style={props} >

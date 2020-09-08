@@ -39,11 +39,20 @@ function GlobalTheme() {
             font-weight:thin;
             overflow-x:hidden;
             overflow-y:scroll;
+            color:${currentTheme.textColor};
+          }
+
+          .account-verification-welcome{
+            color:${currentTheme.textColor};
           }
 
           .Categories-background{
             background-color:${currentTheme.secondaryColor};
             color:${theme === "dark" ? "#ffff" :`${currentTheme.primaryColorMedium}` };
+          }
+
+          .progress-bar{
+            stroke:${theme === "dark" ? `${currentTheme.secondaryColor}` :'#303f9f' };
           }
 
           .Categories-background h1{
@@ -73,7 +82,7 @@ function GlobalTheme() {
             };
           }
 
-          .logo{
+          .logo-link{
             color:${currentTheme.secondaryColor};
           }
 

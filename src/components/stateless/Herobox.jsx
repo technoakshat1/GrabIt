@@ -3,7 +3,7 @@ import Button from "react-bootstrap/Button";
 import { HeroRef } from "../../context/context";
 import { useSpring, animated, config ,useChain} from "react-spring";
 
-function HeroBox() {
+function HeroBox(heroprops) {
   const { heroRef } = useContext(HeroRef);
 
   const enterRef=useRef();
@@ -55,10 +55,10 @@ function HeroBox() {
           Best thing we will take care of social distancing for you.
           <br /> Want to know more how we started ?
         </p>
-
-        <Button variant="warning">Know More</Button>
       </animated.div>
+      <Button variant="warning" onClick={()=>heroprops.onKnowMore()}>Know More</Button>
     </animated.div>
+    
   );
 }
 

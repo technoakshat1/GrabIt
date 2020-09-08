@@ -78,7 +78,7 @@ export async function authenticateLocal(username, password,loginSuccess,loginFai
         loginSuccess(response);
       }
     } catch (err) {
-      if (err.response.status === 401) {
+      if (err&&err.response && err.response.status=== 401) {
         loginFailure();
       }
       console.log(err.response);

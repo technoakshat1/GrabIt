@@ -17,9 +17,13 @@ import Reducer from "./context/Reducer.jsx";
 
 import HomePage from "./pages/homepage.jsx";
 
+import AccountVerificationPage from "./pages/AccoutVerification";
+
 import "./App.css";
 
 import {isLoggedIn,fetchUserData} from "./API/loginAPI.js";
+
+
 
 function App() {
   const themeHook = useState("light");
@@ -40,6 +44,8 @@ function App() {
       payload: response.data,
     });
   }
+
+  
 
   function onSuccess(){
     isAuthenticated[1](true);
@@ -62,6 +68,9 @@ function App() {
               <Switch>
                 <Route exact path="/">
                   <HomePage />
+                </Route>
+                <Route exact path="/account-verification">
+                  <AccountVerificationPage />
                 </Route>
               </Switch>
             </Router>

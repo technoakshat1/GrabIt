@@ -12,8 +12,12 @@ const passportLocalMongoose = require("passport-local-mongoose");
 const TwitterStrategy=require("passport-twitter").Strategy;
 const FacebookStrategy=require("passport-facebook").Strategy;
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const bcrypt=require("bcrypt");
+const jwt=require("jsonwebtoken");
 const findOrCreate = require("mongoose-findorcreate");
 var cors = require("cors");
+
+const mailgun=require("mailgun-js")({apiKey: process.env.MAILGUN_API_KEY, domain: process.env.MAILGUN_DOMAIN});
 
 const app = express();
 
@@ -21,7 +25,7 @@ app.use(
   cors({
     credentials: true,
     origin: ["http://localhost:3000"],
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST","PUT","PATCH","DELETE"],
   })
 );
 
@@ -56,21 +60,75 @@ const userSchema = new mongoose.Schema({
   twitterId:String,
   preferedMode: String,
   profileImage:String,
+  active:Boolean,
+  firstName:String,
+  surname:String,
+  address:String,
+  postalCode:String,
+  state:String,
+  city:String,
+  country:String,
 });
 
-userSchema.plugin(passportLocalMongoose);
+
+
+userSchema.plugin(passportLocalMongoose,{
+  usernameUnique: false,
+ 
+  findByUsername: function(model, queryParameters) {
+    // Add additional query parameter - AND condition - active: true
+    queryParameters.active = true;
+    return model.findOne(queryParameters);
+  }
+});
 userSchema.plugin(findOrCreate);
 const User = new mongoose.model("User", userSchema);
 
-const featuresSchema = mongoose.Schema({
-  featuredCat: String,
-  featuredType: String,
-  featuredItemId: String,
-  featuredItemMedia: {
-    img: Array,
-    vid: Array,
+const productSchema=new mongoose.Schema({
+  prodName:String,
+  media:{
+    img:Array,
+    vid:Array,
   },
+  prodDetails:String,
+  prodCategory:String,
+  prodPrice:String,
+  prodCurrency:String,
+  prodType:String,
+  stockId:String,
+  createdBy:String,
 });
+
+const storeSchema=new mongoose.Schema({
+  storeName:String,
+  storeOwnerId:String,
+  allowedSalesmanIds:Array,
+  allowedAdminIds:Array,
+  media:{
+    img:Array,
+    vid:Array,
+  },
+  storeCategory:String,
+  storeReviewId:String,
+  storeContactDetails:{
+    phoneNumber:Number,
+    primaryEmail:String,
+    secondaryEmail:String,
+    address:String,
+  },
+  storeSize:String,
+  peopleCount:Number
+});
+
+const stockSchema=new mongoose.Schema({
+ storeId:String,
+ productId:String,
+ stockCount:Number,
+});
+
+const Product=new mongoose.model("Product",productSchema);
+const Store=new mongoose.model("Store",storeSchema);
+const Stock=new mongoose.model("Stock",stockSchema);
 
 passport.use(User.createStrategy());
 passport.use(
@@ -98,7 +156,7 @@ passport.use(new TwitterStrategy({
   callbackURL: process.env.TWITTER_URI,
 },
 function(token, tokenSecret, profile, cb) {
-  // console.log(profile);
+  console.log(profile);
   User.findOrCreate({ username:profile.displayName,twitterId: profile.id,profileImage:profile.photos[0].value }, function (err, user) {
     return cb(err, user);
   });
@@ -127,32 +185,7 @@ passport.deserializeUser(function (id, done) {
   });
 });
 
-const Featured = mongoose.model("featured", featuresSchema);
-
 // backend for home route for get
-
-app.get("/", (req, res) => {
-  Featured.find({}, function (err, result) {
-    if (!err) {
-      res.json(result);
-    } else {
-      res.code(500);
-      console.log(err);
-    }
-
-    // const Feature=new Featured({
-    //   featuredCat:"Food",
-    //   featuredType:"Special",
-    //   featuredItemId:"23456666",
-    //   featuredItemMedia:{
-    //    img:[],
-    //    vid:[],
-    //  },
-    // });
-
-    // Feature.save();
-  });
-});
 
 app.get(
   "/signIn/google",
@@ -231,14 +264,33 @@ app
   });
 
 app.post("/signUp", function (req, res) {
-  User.register({ username: req.body.username,email: req.body.email}, req.body.password, function (
+  User.register({ username: req.body.username,email: req.body.email,active:false}, req.body.password, function (
     err,
     user
   ) {
     if (!err) {
-      passport.authenticate("local")(req, res, function () {
-        res.json({ message: "success" });
+      // passport.authenticate("local")(req, res, function () {
+      //   res.json({ message: "success" });
+      // });
+      jwt.sign({username: user.username},process.env.EMAIL_VERIFICATION_SECRET,{expiresIn:'30m'},(err,token)=>{
+        const data={
+          from: 'GrabIt! <grabit@accountverificationgrabit.email>',
+          to: `${user.email}`,
+          subject: 'Account-verification',
+          html: `<html><form><a href=http://localhost:3001/signUp/account-verification/${token}>Click Me</a></form></html>`
+        }
+        mailgun.messages().send(data, (error, body) => {
+          if(!error){
+            res.json({ message:"success",});
+          }else{
+            res.json({ message:"checkEmail"});
+          }
+          console.log(body);
+        });
+        
+        // res.json({ message:'success'});
       });
+
     } else {
       console.log(err.message);
       res.json({ message: err.message });
@@ -287,3 +339,64 @@ app
       );
     }
   });
+
+  app.get("/signUp/account-verification/:token",function(req,res){
+    jwt.verify(req.params.token,process.env.EMAIL_VERIFICATION_SECRET,(err,decoded)=>{
+      // console.log(decoded);
+      if(!err){
+        User.findOne({username:decoded.username},function (err, user){
+          if(!err){
+            //console.log(user);
+            if(user){
+              res.redirect(`http://localhost:3000/account-verification?username=${user.username}&email=${user.email}`);
+            }else{
+              res.status(404).send("User not found");
+            }
+            
+          }else{
+            res.sendStatus(403);
+          }
+        });
+      }else{
+        res.sendStatus(403);
+      }
+       
+    })
+  });
+
+  app.post("/signUp/account-verification",function(req,res){
+    const recivedData={
+      firstName:req.body.firstName,
+      surname:req.body.surname,
+      email:req.body.email,
+      address:req.body.address,
+      postalCode:req.body.postalCode,
+      city:req.body.city,
+      state:req.body.state,
+      country:req.body.country,
+      active:true,
+    }
+     User.findOneAndUpdate({username:req.body.username},recivedData,function(err,user){
+       if(!err){
+         res.json({message:"success"});
+       }else{
+         res.sendStatus(500);
+       }
+     });
+  });
+
+  app.get("/signUp/isPendingForVerification/:username",function(req,res){
+    User.findOne({username:req.params.username},function(err,user){
+        if(!err){
+          if(user&&!user.active){
+            res.json({message:"success"});
+          }else{
+            res.sendStatus(403);
+          }
+        }else{
+          res.sendStatus(500);
+        }
+    });
+  });
+
+  

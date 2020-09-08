@@ -10,9 +10,15 @@ import {
   faArrowLeft,
 } from "@fortawesome/free-solid-svg-icons";
 
+import {Link} from "react-router-dom";
+
 import { useMediaQuery } from "react-responsive";
 
-import { AuthenticationContext, ApiContext,HeroRef } from "../../context/context";
+import AppTheme from "../../AppTheme";
+
+import ThemeContext,{ AuthenticationContext, ApiContext,HeroRef ,LoginOverlayContext} from "../../context/context";
+
+import LoginComponent from "./loginComponent";
 
 import ProfileModalSheet from "../stateless/profileModalSheet";
 import SearchBox from "./searchbox";
@@ -21,6 +27,9 @@ import SideDrawer from "../stateless/sideDrawer";
 function HeaderComponent() {
   const { userInfo } = useContext(ApiContext);
   const {heroRef}=useContext(HeroRef);
+  const open=useContext(LoginOverlayContext)[0];
+  const theme = useContext(ThemeContext)[0];
+  const currentTheme = AppTheme[theme];
 
 
   const [isProfileClicked, setIsProfileClicked] = useState(false);
@@ -40,7 +49,7 @@ function HeaderComponent() {
 
   function handleScroll() {
     if (heroRef.current) {
-      setSticky(heroRef.current.getBoundingClientRect().top<=50);
+      setSticky(heroRef.current.getBoundingClientRect().top<=-20);
       // console.log(heroRef.current.getBoundingClientRect().top);
     }
   }
@@ -74,7 +83,11 @@ function HeaderComponent() {
           )} */}
 
           {!searchBoxRender && (
-            <div className="logo navbar-brand">Grab It!</div>
+            <div className="logo navbar-brand"> 
+            <Link to="/" replace style={{textDecoration:"none",color:`${currentTheme.secondaryColor}`}}>
+            Grab It!
+            </Link>
+            </div>
           )}
           {mobileView && searchBoxRender && (
             <div>
@@ -132,7 +145,7 @@ function HeaderComponent() {
                   <div className="button-profile" onClick={profileClicked}>
                   <FontAwesomeIcon icon={faBars} className="profile-button-bars"/>
                     <img
-                      src={userInfo[0].profileImage}
+                      src={`${userInfo[0].profileImage}`}
                       className="profile-photo"
                     ></img>
                     {isProfileClicked && (
@@ -153,6 +166,8 @@ function HeaderComponent() {
                     )}
                   </div>
                 )}
+
+            {open && <LoginComponent/>}
                 
             </div>
           )}
