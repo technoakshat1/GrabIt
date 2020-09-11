@@ -12,6 +12,10 @@ import {
   isAccountPendingForVerification,
 } from "../API/signupAPI";
 
+import Notification from "../components/statefull/notificationBox";
+import ProgressCircle from "../components/stateless/progressBar";
+import Footer from "../components/stateless/footer";
+
 function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
@@ -30,6 +34,8 @@ function AccountVerificationPage() {
   const [state, setState] = useState("");
   const [country, setCountry] = useState("");
   const username = query.get("username");
+  const [verificationSuccess, setVerificationSuccess] = useState(false);
+  const [progressBar, setProgressBar] = useState(false);
 
   useEffect(() => {
     isAccountPendingForVerification(username, (status) => {
@@ -41,26 +47,16 @@ function AccountVerificationPage() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    console.log("hello");
-    let data = {
-      username: query.get("username"),
-      firstName: firstName,
-      surname: surname,
-      email: email,
-      address: address,
-      postalCode: postalCode,
-      city: city,
-      state: state,
-      country: country,
-    };
-    console.log(data);
+    setProgressBar(true);
+    // console.log("hello");
+    // console.log(data);
     if (
       firstName !== "" &&
       surname !== "" &&
       address !== "" &&
       postalCode !== ""
     ) {
-      let data = {
+      const data = {
         username: query.get("username"),
         firstName: firstName,
         surname: surname,
@@ -71,23 +67,51 @@ function AccountVerificationPage() {
         state: "Gujarat",
         country: "India",
       };
-      console.log(data);
+      // console.log(data);
       accountVerification(data, handleVerificationSuccess);
     }
   }
 
   function handleVerificationSuccess() {
-    console.log("success");
+    // console.log("success");
+    setProgressBar(false);
+    setVerificationSuccess(true);
   }
 
   return (
     <div>
       <GlobalTheme />
       <HeaderComponent />
+      {verificationSuccess && (
+        <Notification
+          message="Verification successfull Welcome to GrabIt!"
+          onClose={() => {}}
+        />
+      )}
       {verificationStatus && (
         <div className="account-verification-welcome" ref={heroRef}>
-            <img src="./assets/images/404error.png" style={{left:"-10%",width:"30%",borderRadius:"24px",height:"40%",display:"inline"}}></img>
-            <h2 style={{right:"10%",margin:"0",fontSize:"2rem",display:"inline",position:"relative"}}>403 Oops looks like this page is banned for you!!</h2>
+          <img
+            src="./assets/images/404error.png"
+            style={{
+              left: "-10%",
+              width: "30%",
+              borderRadius: "24px",
+              height: "40%",
+              display: "inline",
+            }}
+            alt="403"
+          ></img>
+          <h2
+            style={{
+              right: "10%",
+              margin: "0",
+              fontSize: "2rem",
+              display: "inline",
+              position: "relative",
+            }}
+          >
+            403 Oops this page is not allowed press logo for home
+          </h2>
         </div>
       )}
       {!verificationStatus && (
@@ -105,8 +129,9 @@ function AccountVerificationPage() {
                 src={
                   userInfo[0] &&
                   userInfo.some((object) => object.profileImage) &&
-                  userInfo[0].profileImage.replace(/_normal.jpg/i, ".jpg")
+                  userInfo[0].profileImage
                 }
+                alt="pri"
               />
             )}
 
@@ -289,12 +314,24 @@ function AccountVerificationPage() {
                 }}
               />
             </Form.Group>
-            <Button variant="outline-success" type="submit" size="lg">
-              Submit
+            <Button
+              variant="outline-success"
+              type="submit"
+              size="lg"
+              disabled={progressBar}
+            >
+              {progressBar ? (
+                <div style={{ height: "2rem" }}>
+                  <ProgressCircle />
+                </div>
+              ) : (
+                `Submit`
+              )}
             </Button>
           </Form>
         </span>
       )}
+      <Footer/>
     </div>
   );
 }

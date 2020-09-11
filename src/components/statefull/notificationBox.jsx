@@ -1,3 +1,4 @@
+//jshint esversion:6
 import React, { useRef, useState } from "react";
 import { useSpring, animated, config, useChain } from "react-spring";
 
@@ -53,14 +54,14 @@ function Notification(props) {
       onMouseLeave={() => {
         setLife({
           width: "100%",
-          config: { duration: 5000 },
+          config: { duration: 3000 },
           onRest: () => {
-            if (!isMouseEnter) {
+            if (isMouseEnter) {
               setBoxAnimation({
                 top: "-60rem",
-                delay: 100,
                 config: { tension: 125, friction: 20, mass: 1.5 },
                 onRest: () => {
+                  //console.log("onclosetriggered");
                   props.onClose();
                 },
               });

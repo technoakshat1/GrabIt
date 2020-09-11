@@ -47,7 +47,7 @@ export async function isLoggedIn(authenticatedCallback,unAuthenticatedCallback){
       url: 'http://localhost:3001/signIn',
     });
 
-    console.log(response.data.mode);
+    // console.log(response.data.mode);
 
     if(response.data.message==="Authenticated"){
       authenticatedCallback();
@@ -102,7 +102,7 @@ export async function authenticateLocal(username, password,loginSuccess,loginFai
     }
   }
 
-  export async function saveMode(themeMode) {
+  export async function saveMode(themeMode,onSuccess) {
     try {
       const response = await axios({
         method: "post",
@@ -114,7 +114,7 @@ export async function authenticateLocal(username, password,loginSuccess,loginFai
         }),
       });
       if (response.data.message === "success") {
-        alert("user theme preference saved");
+        onSuccess();
       }
     } catch (err) {
       console.log(err);

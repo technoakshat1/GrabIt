@@ -1,7 +1,7 @@
 import qs from "qs";
 import axios from "axios";
 
-export async function signUp(email, username, password, onSignUpSuccess) {
+export async function signUp(email, username, password, onSignUpSuccess,onSignUpFailure) {
   try {
     const response = await axios({
       method: "post",
@@ -22,7 +22,7 @@ export async function signUp(email, username, password, onSignUpSuccess) {
       onSignUpSuccess();
     }
   } catch (err) {
-    alert("Currently our servers are down please try again later!!");
+    onSignUpFailure();
   }
 }
 

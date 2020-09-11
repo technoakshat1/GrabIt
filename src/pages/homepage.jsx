@@ -1,13 +1,14 @@
 import React, { useContext, useRef, useEffect ,useState } from "react";
+
 import { Overlay } from "react-portal-overlay";
 
 import { LoginOverlayContext ,HeroRef } from "../context/context";
 
 import HeaderComponent from "../components/statefull/header";
 
-import GlobalTheme from "../components/stateless/themeComponent";
+import Footer from "../components/stateless/footer";
 
-import LoginComponent from "../components/statefull/loginComponent";
+import GlobalTheme from "../components/stateless/themeComponent";
 
 import HeroBox from "../components/stateless/Herobox";
 
@@ -22,7 +23,7 @@ import { Categories } from "../categories";
 import ReactPlayer from "react-player";
 
 function HomePage() {
-  const [open, setOpen] = useContext(LoginOverlayContext);
+  const  setOpen = useContext(LoginOverlayContext)[1];
   const wrapperRef = useRef(null);
   useOutside(wrapperRef);
   const {heroRef}=useContext(HeroRef);
@@ -133,6 +134,9 @@ function HomePage() {
             </div>
           </div>
         </animated.div>
+      </section>
+      <section style={{bottom:"-40rem",position:"relative"}}>
+      <Footer/>
       </section>
     </div>
   );

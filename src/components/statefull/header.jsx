@@ -1,3 +1,4 @@
+//jshint esversion:6
 import React, { useState, useContext, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -10,32 +11,40 @@ import {
   faArrowLeft,
 } from "@fortawesome/free-solid-svg-icons";
 
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import { useMediaQuery } from "react-responsive";
 
 import AppTheme from "../../AppTheme";
 
-import ThemeContext,{ AuthenticationContext, ApiContext,HeroRef ,LoginOverlayContext} from "../../context/context";
+import ThemeContext, {
+  AuthenticationContext,
+  ApiContext,
+  HeroRef,
+  LoginOverlayContext,
+  ThemeSaveContext,
+} from "../../context/context";
+
+import { THEME_MODE_SAVED } from "../../context/action.types";
 
 import LoginComponent from "./loginComponent";
 
+import NotificationBox from "./notificationBox";
+
 import ProfileModalSheet from "../stateless/profileModalSheet";
 import SearchBox from "./searchbox";
-import SideDrawer from "../stateless/sideDrawer";
 
 function HeaderComponent() {
   const { userInfo } = useContext(ApiContext);
-  const {heroRef}=useContext(HeroRef);
-  const open=useContext(LoginOverlayContext)[0];
+  const { heroRef } = useContext(HeroRef);
+  const open = useContext(LoginOverlayContext)[0];
   const theme = useContext(ThemeContext)[0];
   const currentTheme = AppTheme[theme];
-
-
   const [isProfileClicked, setIsProfileClicked] = useState(false);
   const mobileView = useMediaQuery({ query: "(max-width: 667px)" });
+  const { isThemeSaved, dispatchSaveTheme } = useContext(ThemeSaveContext);
 
-  const [isSticky,setSticky]=useState(false);
+  const [isSticky, setSticky] = useState(false);
 
   const [searchBoxRender, setSearchBoxRender] = useState(false);
 
@@ -45,11 +54,9 @@ function HeaderComponent() {
     setIsProfileClicked(!isProfileClicked);
   }
 
-
-
   function handleScroll() {
     if (heroRef.current) {
-      setSticky(heroRef.current.getBoundingClientRect().top<=-20);
+      setSticky(heroRef.current.getBoundingClientRect().top <= -20);
       // console.log(heroRef.current.getBoundingClientRect().top);
     }
   }
@@ -62,18 +69,30 @@ function HeaderComponent() {
     setSearchBoxRender(false);
   }
 
-  useEffect(()=>{
-    window.addEventListener('scroll', handleScroll);
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
 
     return () => {
-      window.removeEventListener('scroll', () => handleScroll);
+      window.removeEventListener("scroll", () => handleScroll);
     };
   });
 
   return (
-      <div className={`header${isSticky ? ' scroll-header' : ''}`}>
-        <div className="navbar">
-          {/* {mobileView && !searchBoxRender && isAuthenticated && (
+    <div className={`header${isSticky ? " scroll-header" : ""}`}>
+      {isThemeSaved && (
+        <NotificationBox
+          message="User Theme preference saved! we are good to go ! see you soon bye  🤗🤗🤗🤗 happy shopping!!"
+          onClose={() => {
+            //console.log('onCloseTriggered')
+            dispatchSaveTheme({
+              type: THEME_MODE_SAVED,
+              payload: false,
+            });
+          }}
+        />
+      )}
+      <div className="navbar">
+        {/* {mobileView && !searchBoxRender && isAuthenticated && (
             <FontAwesomeIcon
               icon={faBars}
               onClick={onSideDrawer}
@@ -82,97 +101,109 @@ function HeaderComponent() {
             />
           )} */}
 
-          {!searchBoxRender && (
-            <div className="logo navbar-brand"> 
-            <Link to="/" replace style={{textDecoration:"none",color:`${currentTheme.secondaryColor}`}}>
-            Grab It!
+        {!searchBoxRender && (
+          <div className="logo navbar-brand">
+            <Link
+              to="/"
+              replace
+              style={{
+                textDecoration: "none",
+                color: `${currentTheme.secondaryColor}`,
+              }}
+            >
+              Grab It!
             </Link>
-            </div>
-          )}
-          {mobileView && searchBoxRender && (
-            <div>
-              <FontAwesomeIcon
-                icon={faArrowLeft}
-                onClick={backArrowClicked}
-                className="header-mobile-icon"
-                style={{ marginLeft: "12px", marginTop: "15px" }}
-              />
-              <div className=" nav-item search-box-mobile">
-                <SearchBox />
-              </div>
-            </div>
-          )}
-          {!mobileView && (
-            <div className=" nav-item">
+          </div>
+        )}
+        {mobileView && searchBoxRender && (
+          <div>
+            <FontAwesomeIcon
+              icon={faArrowLeft}
+              onClick={backArrowClicked}
+              className="header-mobile-icon"
+              style={{ marginLeft: "12px", marginTop: "15px" }}
+            />
+            <div className=" nav-item search-box-mobile">
               <SearchBox />
             </div>
-          )}
+          </div>
+        )}
+        {!mobileView && (
+          <div className=" nav-item">
+            <SearchBox />
+          </div>
+        )}
 
-          {mobileView && !searchBoxRender && (
-            <FontAwesomeIcon
-              icon={faSearch}
-              className="header-mobile-icon"
-              onClick={searchBoxClicked}
-            />
-          )}
+        {mobileView && !searchBoxRender && (
+          <FontAwesomeIcon
+            icon={faSearch}
+            className="header-mobile-icon"
+            onClick={searchBoxClicked}
+          />
+        )}
 
-          {/* {mobileView && (
+        {/* {mobileView && (
             <div ref={wrapperRef}>
               <SideDrawer classList={`${classList}`} />
             </div>
           )} */}
-          {!searchBoxRender && (
-            <div className="nav-item">
-              <FontAwesomeIcon icon={faQrcode} className="header-icons" />
-              {isAuthenticated && !mobileView && (
-                <React.Fragment>
+        {!searchBoxRender && (
+          <div className="nav-item">
+            <FontAwesomeIcon icon={faQrcode} className="header-icons" />
+            {isAuthenticated && !mobileView && (
+              <React.Fragment>
+                <FontAwesomeIcon
+                  icon={faShoppingCart}
+                  className="header-icons"
+                />
+                <div className="cart-dot">
+                  <h6>0</h6>
+                </div>
+                <FontAwesomeIcon icon={faBell} className="header-icons" />
+                <div className="notification-dot">
+                  <h6>0</h6>
+                </div>
+              </React.Fragment>
+            )}
+
+            {userInfo !== undefined &&
+              userInfo.some((object) => object.profileImage) && (
+                <div className="button-profile" onClick={profileClicked}>
                   <FontAwesomeIcon
-                    icon={faShoppingCart}
-                    className="header-icons"
+                    icon={faBars}
+                    className="profile-button-bars"
                   />
-                  <div className="cart-dot">
-                    <h6>0</h6>
-                  </div>
-                  <FontAwesomeIcon icon={faBell} className="header-icons" />
-                  <div className="notification-dot">
-                    <h6>0</h6>
-                  </div>
-                </React.Fragment>
+                  <img
+                    src={`${userInfo[0].profileImage}`}
+                    className="profile-photo"
+                  ></img>
+                  {isProfileClicked && (
+                    <ProfileModalSheet onClose={profileClicked} />
+                  )}
+                </div>
+              )}
+            {userInfo !== undefined &&
+              !userInfo.some((object) => object.profileImage) && (
+                <div className="button-profile" onClick={profileClicked}>
+                  <FontAwesomeIcon
+                    icon={faBars}
+                    className="profile-button-bars"
+                  />
+                  <FontAwesomeIcon
+                    icon={faUserCircle}
+                    className="profile-placeholder"
+                  />
+                  {isProfileClicked && (
+                    <ProfileModalSheet onClose={profileClicked} />
+                  )}
+                </div>
               )}
 
-              {userInfo !== undefined &&
-                userInfo.some((object) => object.profileImage) && (
-                  <div className="button-profile" onClick={profileClicked}>
-                  <FontAwesomeIcon icon={faBars} className="profile-button-bars"/>
-                    <img
-                      src={`${userInfo[0].profileImage}`}
-                      className="profile-photo"
-                    ></img>
-                    {isProfileClicked && (
-                      <ProfileModalSheet onClose={profileClicked} />
-                    )}
-                  </div>
-                )}
-              {userInfo !== undefined &&
-                !userInfo.some((object) => object.profileImage) && (
-                  <div className="button-profile" onClick={profileClicked}>
-                  <FontAwesomeIcon icon={faBars} className="profile-button-bars"/>
-                    <FontAwesomeIcon
-                      icon={faUserCircle}
-                      className="profile-placeholder"
-                    />
-                    {isProfileClicked && (
-                      <ProfileModalSheet onClose={profileClicked} />
-                    )}
-                  </div>
-                )}
-
-            {open && <LoginComponent/>}
-                
-            </div>
-          )}
-        </div>
+            {open && <LoginComponent />}
+          </div>
+        )}
       </div>
+    </div>
   );
 }
 

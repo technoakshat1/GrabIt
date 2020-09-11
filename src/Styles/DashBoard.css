@@ -1,0 +1,81 @@
+
+.control-panel{
+ position: relative;
+ padding-top:2rem;
+ padding-bottom: 2rem;
+ top:5rem;
+ display: flex;
+ flex-direction: column;
+ height:110%;
+ border-radius:0 20px 20px 0;
+ /* margin-bottom: 0; */
+ /* width:%; */
+ /* background-color:var(--light); */
+}
+
+.control-panel-header{
+  font-size:4.8rem;
+  text-align:center;
+  height: 8rem;
+}
+
+.control-panel-header svg{
+    cursor: pointer;
+}
+
+.control-panel-header img{
+    width:40%;
+    border-radius:50%;
+    object-fit:cover;
+    object-position: top center;
+}
+
+
+.control-panel-central{
+    margin-top:2rem;
+}
+
+.central-wrapper{
+    margin-top:10px;
+    height:4rem;
+    width:80%;
+    cursor: pointer;
+    /* padding:2rem; */
+}
+
+.central-options{
+    width: 100%;
+    /* position: relative; */
+    font-size:2rem;
+    /* padding:1rem; */
+}
+
+
+.central-options p{
+    display: inline;
+    font-size:1.1rem;
+    position: relative;
+    /* margin: 1rem; */
+    bottom:1.4rem;
+    /* margin:2rem 1rem; */
+}
+
+.central-options svg{
+    /* position: relative; */
+    /* bottom:1.5rem; */
+
+    margin:1rem;
+}
+
+
+.active{
+    border-radius:0 35px 35px 0;
+    /* background-color:var(--warning); */
+    box-shadow: 0 3px 5px 2px rgba(0, 0, 0, 0.12);
+}
+
+@media screen and (max-width:770px){
+    .central-options p{
+        visibility:hidden;
+    }
+}

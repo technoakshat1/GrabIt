@@ -1,3 +1,4 @@
+//jshint esversion:6
 import React, { useContext, useEffect } from "react";
 import Helmet from "react-helmet";
 
@@ -39,6 +40,41 @@ function GlobalTheme() {
             font-weight:thin;
             overflow-x:hidden;
             overflow-y:scroll;
+            color:${currentTheme.textColor};
+          }
+
+          .active{
+            background-color:${currentTheme.secondaryColor};
+            color:white;
+          }
+
+          .central-wrapper:hover{
+            background-color:${
+              theme === "dark"
+                ? `rgba(252, 250, 250,0.5)`
+                : `rgba(0, 0, 0, 0.12)`
+            };
+            width:100%;
+            border-radius:0 35px 35px 0;
+          }
+
+          .active:hover{
+            background-color:${currentTheme.secondaryColorLight};
+            width:80%;
+          }
+
+          .control-panel{
+            background-color:${currentTheme.primaryColorMedium};
+            {/* background-color:${currentTheme.p}; */}
+          }
+
+          .account-dashboard{
+            background-color:${currentTheme.primaryColorLight};
+          }
+
+
+          .footer{
+            background-color:${currentTheme.primaryColorLight};
             color:${currentTheme.textColor};
           }
 

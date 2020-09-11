@@ -7,6 +7,35 @@
   cursor: pointer;
 }
 
+.footer{
+  position: relative;
+  margin-top:10rem;
+  text-align:center;
+  height:10%;
+  padding-top:5rem;
+  padding-bottom: 5rem;
+}
+
+.footer h3{
+  display: inline;
+  font-size:1.4rem;
+}
+.footer p{
+  margin:25px;
+  display: inline;
+  font-size:1.2rem;
+}
+
+.footer-icons{
+  display:block;
+  margin:auto 1rem;
+  font-size: 1.4rem;
+}
+
+.footer-icons svg{
+  margin:1rem;
+}
+
 .login-overlay{
   background-color: rgba(0, 0, 0, 0.8);
   position:fixed;
@@ -114,7 +143,7 @@
   position: fixed;
   z-index:800;
   left:19rem;
-  height:23%;
+  height:25%;
   width:40rem;
   opacity:0.96;
   background-color:#90a4ae;
@@ -128,7 +157,7 @@
   height:0.67rem;
   background-color:#303f9f;
   left:0rem;
-  top:8rem;
+  top:9rem;
   opacity:1;
 }
 
@@ -396,6 +425,12 @@
 
 @media screen and (max-width:1050px){
 
+  .hero-box button{
+    top:25rem;
+    left:11rem;
+  }
+  
+
   .Categories-background{
     padding:1rem;
   }
@@ -426,6 +461,10 @@
 }
 
 @media screen and (max-width:999px){
+  .hero-box button{
+    top:30rem;
+    left:2rem;
+  }
   .account-verification-form,.account-verification-welcome{
     left:10rem;
   }
@@ -584,6 +623,10 @@
 }
 
 @media screen and (max-width:734px){
+  .hero-box button{
+    top:37rem;
+    left:23rem;
+  }
   .hero-box{
     left:1rem;
     width: 25rem;

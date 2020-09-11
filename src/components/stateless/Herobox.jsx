@@ -1,35 +1,26 @@
+//jshint esversion:6
 import React, {useContext, useRef } from "react";
 import Button from "react-bootstrap/Button";
 import { HeroRef } from "../../context/context";
-import { useSpring, animated, config ,useChain} from "react-spring";
+import { useSpring, animated, useChain} from "react-spring";
 
 function HeroBox(heroprops) {
   const { heroRef } = useContext(HeroRef);
-
-  const enterRef=useRef();
   const imageRef=useRef();
   const textRef=useRef();
 
-
+  const AnimatedButton=animated(Button);
 
   const imageProps = useSpring({from :{opacity:1},to:{opacity:0.35},ref:imageRef});
 
   const textProps= useSpring({ from :{opacity:0},opacity:1,ref:textRef});
 
-  const props = useSpring({
-    from: { top:`-20rem`},
-    top:`5.5rem`,
-    delay: 200,
-    config: config.stiff,
-    ref:enterRef,
-  });
-
-  useChain([enterRef,imageRef,textRef],[0,2,2.5]);
+  useChain([imageRef,textRef],[2,3]);
 
   
 
   return (
-    <animated.div className="hero-box" style={props} ref={heroRef}
+    <div className="hero-box" ref={heroRef}
     >
       <div
         className="hero-opacity"
@@ -56,8 +47,8 @@ function HeroBox(heroprops) {
           <br /> Want to know more how we started ?
         </p>
       </animated.div>
-      <Button variant="warning" onClick={()=>heroprops.onKnowMore()}>Know More</Button>
-    </animated.div>
+      <AnimatedButton variant="warning" onClick={()=>heroprops.onKnowMore()} style={textProps}>Know More</AnimatedButton>
+    </div>
     
   );
 }
