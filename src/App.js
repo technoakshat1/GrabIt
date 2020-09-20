@@ -27,6 +27,17 @@ import "./App.css";
 
 import { isLoggedIn, fetchUserData } from "./API/loginAPI.js";
 
+import OauthRedirect from "./pages/Oauth-redirect.jsx";
+
+function usePrevious(value) {
+  const ref = useRef();
+  useEffect(() => {
+    ref.current = value;
+    console.log(ref.current);
+  });
+  return ref.current;
+}
+
 function App() {
   const themeHook = useState("light");
   const profileTabOpen = useState(false);
@@ -36,11 +47,13 @@ function App() {
   const [userInfo, dispatch] = useReducer(Reducer, []);
   const [isThemeSaved, dispatchSaveTheme] = useReducer(ThemeReducer, false);
   const heroRef = useRef(null);
+  const previousTheme=usePrevious(themeHook[0]);
 
   useEffect(() => {
-    // console.log("hello");
+    console.log(previousTheme);
     isLoggedIn(onSuccess, unAuthenticated);
-  });
+    // themeHook[1](previousTheme);
+  },isAuthenticated[0]);
 
   function onFetchUserData(response) {
     dispatch({
@@ -77,8 +90,14 @@ function App() {
                         <Route exact path="/account-verification">
                           <AccountVerificationPage />
                         </Route>
-                        <Route exact path="/account-dashboard">
+                        <Route  path="/account-dashboard">
                           <AccountDashboard />
+                        </Route>
+                        <Route exact path="/oAuth/redirect/success">
+                          <OauthRedirect success/>
+                        </Route>
+                        <Route exact path="/oAuth/redirect/failure">
+                          <OauthRedirect success={false}/>
                         </Route>
                       </Switch>
                     </Router>

@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation,Redirect } from "react-router-dom";
 import GlobalTheme from "../components/stateless/themeComponent";
 import HeaderComponent from "../components/statefull/header";
 import Form from "react-bootstrap/Form";
@@ -24,7 +24,7 @@ function AccountVerificationPage() {
   const query = useQuery();
   const { userInfo } = useContext(ApiContext);
   const { heroRef } = useContext(HeroRef);
-  const [verificationStatus, setVerificationStatus] = useState(true);
+  const [verificationStatus, setVerificationStatus] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [surname, setSurname] = useState("");
   const [email, setEmail] = useState("");
@@ -36,11 +36,15 @@ function AccountVerificationPage() {
   const username = query.get("username");
   const [verificationSuccess, setVerificationSuccess] = useState(false);
   const [progressBar, setProgressBar] = useState(false);
+  const [details,setDetails]=useState(false);
+  const [redirect,setRedirect]=useState(false);
 
   useEffect(() => {
     isAccountPendingForVerification(username, (status) => {
       if (status) {
         setVerificationStatus(false);
+      }else{
+        setVerificationStatus(true);
       }
     });
   });
@@ -49,7 +53,7 @@ function AccountVerificationPage() {
     e.preventDefault();
     setProgressBar(true);
     // console.log("hello");
-    // console.log(data);
+    
     if (
       firstName !== "" &&
       surname !== "" &&
@@ -69,6 +73,9 @@ function AccountVerificationPage() {
       };
       // console.log(data);
       accountVerification(data, handleVerificationSuccess);
+    }else{
+      setProgressBar(false);
+      setDetails(true);
     }
   }
 
@@ -82,10 +89,17 @@ function AccountVerificationPage() {
     <div>
       <GlobalTheme />
       <HeaderComponent />
+      {redirect&&<Redirect to="/"/>}
       {verificationSuccess && (
         <Notification
-          message="Verification successfull Welcome to GrabIt!"
-          onClose={() => {}}
+          message="Verification successfull Welcome to GrabIt! Redirecting to home....."
+          onClose={() => {setRedirect(true);}}
+        />
+      )}
+      {details && (
+        <Notification
+          message="Please enter all details with required(*).re-check and try submiting again"
+          onClose={() => {setDetails(false)}}
         />
       )}
       {verificationStatus && (

@@ -1,10 +1,10 @@
 import React, { useContext, useRef, useState } from "react";
-import { ApiContext, HeroRef } from "../../context/context";
+import { ApiContext, HeroRef , dashBoardContext} from "../../context/context";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUserCircle,
   faChartPie,
-  faBoxes,
+  faCommentDots,
   faHistory,
   faBars,
   faKey,
@@ -12,16 +12,18 @@ import {
 
 import { useSpring, animated } from "react-spring";
 
+import {Link} from "react-router-dom";
+
 function DashboardControlPanel() {
   const { userInfo } = useContext(ApiContext);
   const { heroRef } = useContext(HeroRef);
-  const overviewRef = useRef();
-  const ordersRef = useRef();
+  const chatRef = useRef();
   const profileRef = useRef();
   const historyRef = useRef();
   const privacyRef = useRef();
-  const [previousRef, setPreviousRef] = useState(overviewRef);
+  const [previousRef, setPreviousRef] = useState(profileRef);
   const [isBarClicked, setIsBarClicked] = useState(false);
+  const[animation,setAnimation]=useContext(dashBoardContext);
   const [props, set] = useSpring(() => {
     return {
       from: { width: "8%" },
@@ -30,7 +32,7 @@ function DashboardControlPanel() {
 
   const [optionProps, hideOptions] = useSpring(() => {
     return {
-      from: { opacity: 0 },
+      from: { opacity: 0 ,visibility: "hidden"},
     };
   });
 
@@ -40,7 +42,6 @@ function DashboardControlPanel() {
         fontSize: "3rem",
         marginRight: "0rem",
         marginLeft: "0rem",
-        marginBottom: "0rem",
       },
     };
   });
@@ -56,6 +57,7 @@ function DashboardControlPanel() {
   }
 
   function handleBarClick() {
+    setAnimation(!animation);
     setIsBarClicked(!isBarClicked);
     if (!isBarClicked) {
       set({ width: "22%" });
@@ -95,18 +97,34 @@ function DashboardControlPanel() {
         </animated.h4>
       </div>
       <div className="control-panel-central">
-        <div
+      <Link to="/account-dashboard/overview" style={{color:"inherit"}}>
+      <div
           className="active central-wrapper"
-          ref={overviewRef}
+          ref={profileRef}
           onClick={(e) => {
-            handleClick(e, overviewRef);
+            handleClick(e, profileRef);
           }}
         >
           <div className="central-options">
-            <FontAwesomeIcon icon={faChartPie} />
-            <animated.p style={optionProps}>Overview</animated.p>
+            <FontAwesomeIcon icon={faUserCircle} />
+            <animated.p style={optionProps}> Profile</animated.p>
           </div>
         </div>
+        </Link>
+        <Link to="/account-dashboard/privacy" style={{color:"inherit",textDecoration:"none"}}>
+        <div
+          className="central-wrapper"
+          ref={privacyRef}
+          onClick={(e) => {
+            handleClick(e, privacyRef);
+          }}
+        >
+          <div className="central-options">
+            <FontAwesomeIcon icon={faKey} />
+            <animated.p style={optionProps}> Privacy</animated.p>
+          </div>
+        </div>
+        </Link>
         <div
           className="central-wrapper"
           ref={historyRef}
@@ -121,38 +139,14 @@ function DashboardControlPanel() {
         </div>
         <div
           className="central-wrapper"
-          ref={ordersRef}
+          ref={ chatRef}
           onClick={(e) => {
-            handleClick(e, ordersRef);
+            handleClick(e, chatRef);
           }}
         >
           <div className="central-options">
-            <FontAwesomeIcon icon={faBoxes} />
-            <animated.p style={optionProps}>Orders</animated.p>
-          </div>
-        </div>
-        <div
-          className="central-wrapper"
-          ref={profileRef}
-          onClick={(e) => {
-            handleClick(e, profileRef);
-          }}
-        >
-          <div className="central-options">
-            <FontAwesomeIcon icon={faUserCircle} />
-            <animated.p style={optionProps}> Profile</animated.p>
-          </div>
-        </div>
-        <div
-          className="central-wrapper"
-          ref={privacyRef}
-          onClick={(e) => {
-            handleClick(e, privacyRef);
-          }}
-        >
-          <div className="central-options">
-            <FontAwesomeIcon icon={faKey} />
-            <animated.p style={optionProps}> Privacy</animated.p>
+            <FontAwesomeIcon icon={faCommentDots} />
+            <animated.p style={optionProps}>Chat</animated.p>
           </div>
         </div>
       </div>

@@ -140,7 +140,7 @@ function ProfileModalSheet(props) {
           <div className="modal-wrapper">
             <div className="modal-options">
               <Link
-                to="/account-dashboard"
+                to="/account-dashboard/overview"
                 style={{
                   textDecoration: "none",
                   color: `${currentTheme.textColor}`,

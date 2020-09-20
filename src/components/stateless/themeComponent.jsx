@@ -43,6 +43,10 @@ function GlobalTheme() {
             color:${currentTheme.textColor};
           }
 
+          .dashboard-panel{
+            background-color:${currentTheme.primaryColorMedium};
+          }
+
           .active{
             background-color:${currentTheme.secondaryColor};
             color:white;
@@ -52,7 +56,7 @@ function GlobalTheme() {
             background-color:${
               theme === "dark"
                 ? `rgba(252, 250, 250,0.5)`
-                : `rgba(0, 0, 0, 0.12)`
+                : `rgba(74, 20, 140, 0.1)`
             };
             width:100%;
             border-radius:0 35px 35px 0;

@@ -11,7 +11,10 @@ import ThemeContext, {
   defaultLoginContext,
   AuthenticationContext,
   SwitchContext,
+  ApiContext
 } from "../../context/context";
+
+import {FETCH_USER_DATA}from "../../context/action.types";
 
 import { useMediaQuery } from "react-responsive";
 
@@ -37,6 +40,7 @@ function LoginCard() {
   const [component, setComponent] = useContext(defaultLoginContext);
   const setIsAuthenticated = useContext(AuthenticationContext)[1];
   const [open, setOpen] = useContext(LoginOverlayContext);
+  const {dispatch}=useContext(ApiContext);
   const setThemeMode = useContext(ThemeContext)[1];
   const setChecked = useContext(SwitchContext)[1];
   const mobileView = useMediaQuery({ query: "(max-width: 667px)" });
@@ -164,14 +168,18 @@ function LoginCard() {
   }
 
   function handleLoginSuccess(response) {
+    if (response && response.data && response.data.mode) {
+      dispatch({
+        type:FETCH_USER_DATA,
+        payload:response.data,
+      })
+      setThemeMode(response.data.mode);
+    }
+
     setWrongCredentials(false);
     setIsAuthenticated(true);
     setSignInSuccess(true);
     setProgressBar(false);
-    if (response && response.data && response.data.mode) {
-      setThemeMode(response.data.mode);
-    }
-
     setChecked(response.data.mode === "dark" ? true : false);
   }
 
@@ -214,11 +222,14 @@ function LoginCard() {
           />
         )}
         
-        {(signUpFailure||signInFailure)&&<Notification message="Currently our servers are down please try again later!!" onClose={() => setOpen(false)}/>}
+        {signUpFailure&&<Notification message="Currently our servers are down please try again later!!" onClose={() => setOpen(false)}/>}
          
+        {signInFailure&&<Notification message="Oops wrong credentials please check and try again!!" onClose={() =>{}}/>}
 
         {signUpWrongCred && (
-          <Notification message="Please enter all information correctly and check if password is in strong category try using numbers and special symbols!!" />
+          <Notification message="Please enter all information correctly and check if password is in strong category try using numbers and special symbols!!" 
+            onClose={() =>{}}
+          />
         )}
 
         {!mobileView && (
